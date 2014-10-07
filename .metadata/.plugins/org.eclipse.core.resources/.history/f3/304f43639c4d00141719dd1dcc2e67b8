@@ -1,0 +1,9 @@
+package com.togrulseyid.funnyvideos.models;
+
+public class GCMModel {
+
+	private String gcm;
+	private String sysLang;
+	private String message;
+	private Integer messageId;
+}

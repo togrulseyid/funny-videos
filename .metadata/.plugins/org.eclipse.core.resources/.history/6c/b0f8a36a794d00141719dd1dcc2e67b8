@@ -1,0 +1,101 @@
+package com.togrulseyid.funnyvideos.activities;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import com.togrulseyid.funnyvideos.R;
+import com.togrulseyid.funnyvideos.fragments.NotificationVideosListFragment;
+import com.togrulseyid.funnyvideos.fragments.VideosListFragment;
+import com.togrulseyid.funnyvideos.models.LocalSettingModel;
+
+public class MainActivity extends ActionBarActivity {
+
+	
+	private LocalSettingModel settingModel;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		/*
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		boolean notifications_new_message_vibrate = sharedPref.getBoolean("notifications_new_message_vibrate", false);
+		boolean notifications_new_message_ringtone = sharedPref.getBoolean("notifications_new_message_ringtone", false);
+		// notifications_new_message_ringtone
+		Log.d("testVV", "notifications_new_message_vibrate: "
+				+ notifications_new_message_vibrate
+				+ "notifications_new_message_ringtone: "
+				+ notifications_new_message_ringtone);
+		
+		Toast.makeText(
+				getApplicationContext(),
+				"vibrate: " + notifications_new_message_vibrate + "ringtone: "
+						+ notifications_new_message_ringtone,
+				Toast.LENGTH_SHORT).show();
+		
+//		SharedPreferences sharedPreferences = getSharedPreferences("example_text", MODE_PRIVATE);
+//		System.out.println(findPreference("notifications_new_message_ringtone"));
+//		sharedPreferences.getBoolean(key, false);
+
+		Bundle bundle = getIntent().getExtras();
+		if(bundle != null) {
+			settingModel = (LocalSettingModel) bundle
+					.get(getString(R.string._B_PREFERENCE_OBJECT));
+
+			if (settingModel.isSaveSession()) {
+
+			}
+		} else {
+			settingModel = new LocalSettingModel();
+			settingModel.setNotification(true);
+		}
+		
+		if (settingModel.isNotification()) {
+			
+		}
+		
+		*/
+		
+
+		Bundle bundle = getIntent().getExtras();
+		if (bundle != null
+				&& bundle.getSerializable(getResources().getString(
+						R.string._B_NOTIFICATION_OBJECT)) != null) {
+			if (savedInstanceState == null) {
+				getSupportFragmentManager().beginTransaction()
+						.add(R.id.container, new NotificationVideosListFragment(bundle.getSerializable(getResources().getString(
+								R.string._B_NOTIFICATION_OBJECT)))).commit();
+			}
+			
+		} else {
+			if (savedInstanceState == null) {
+				getSupportFragmentManager().beginTransaction()
+						.add(R.id.container, new VideosListFragment()).commit();
+			}
+		}
+		
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			startActivity(new Intent(this, SettingsActivity.class));
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	/**/
+
+}

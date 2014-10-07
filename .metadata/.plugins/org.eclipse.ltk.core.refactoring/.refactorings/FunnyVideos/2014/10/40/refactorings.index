@@ -1,0 +1,31 @@
+1412169661666	Rename package 'com.newgeneration.funnyvideos'
+1412169825884	Rename package 'com.newgeneration.funnyvideos.activity'
+1412169997062	Rename package 'com.togrulseyid.funnyvideos.activity'
+1412170028713	Delete element
+1412172702677	Delete element
+1412173447631	Rename field 'URL_CHANNELS_LIST'
+1412180346904	Rename type 'ChannelModel'
+1412180373974	Rename type 'ChannelListModel'
+1412182364875	Delete element
+1412183413351	Rename resource 'channel_default.png'
+1412188505685	Rename field 'listViewCashOutFragmentMoneyTabListDivider'
+1412188560484	Rename field 'listViewCashOutFragmentMoneyTabListDividerColor'
+1412188576849	Rename field 'listview_videos_list_fragment_divider'
+1412188604281	Rename field 'listViewCacheColorHint'
+1412189592680	Rename field 'channelFeedAsynchFromServer'
+1412189763157	Delete element
+1412192183907	Rename type 'TvToast'
+1412193701469	Rename field 'error_player'
+1412194431882	Delete element
+1412194468742	Move compilation unit
+1412194599287	Rename field 'fragment'
+1412196596322	Rename field 'endId'
+1412196626170	Rename method 'getEndId'
+1412196633176	Rename method 'setEndId'
+1412196881878	Rename local variable 'flag'
+1412196885685	Rename field 'flag'
+1412197001159	Move compilation unit
+1412197048169	Move compilation unit
+1412197290941	Rename field 'pref_title_social_recommendations'
+1412197353194	Rename field 'pref_description_social_recommendations'
+1412197474165	Rename field 'pref_title_new_message_notifications'

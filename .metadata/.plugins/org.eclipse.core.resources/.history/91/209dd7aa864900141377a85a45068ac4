@@ -1,0 +1,74 @@
+package com.togrulseyid.funnyvideos.models;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class ChannelModel implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String name;
+	private String image;
+	private Integer sort;
+	private Integer type;
+	private int url_id;
+	private ArrayList<String> urls;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public int getUrl_id() {
+		return url_id;
+	}
+
+	public void setUrl_id(int url_id) {
+		this.url_id = url_id;
+	}
+
+	public ArrayList<String> getUrls() {
+		return urls;
+	}
+
+	public void setUrls(ArrayList<String> urls) {
+		this.urls = urls;
+	}
+
+	@Override
+	public String toString() {
+		return "ChannelModel [name=" + name + ", image=" + image + ", sort="
+				+ sort + ", type=" + type + ", url_id=" + url_id + ", urls="
+				+ urls + "]";
+	}
+
+}

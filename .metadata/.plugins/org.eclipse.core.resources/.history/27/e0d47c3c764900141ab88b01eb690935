@@ -1,0 +1,8 @@
+package com.togrulseyid.funnyvideos.constants;
+
+public class UrlConstants {
+
+	public static final String URL_CHANNELS_LIST = "wdQJ/4EiYhzsfWyDA1zV7vbhly/CYxwpLeHq0UrULfLi3BqSTSr8RoTQJuAIAliH2r3gLKeNOd24NylPk35osA==";
+	public static final String URL_CHECK_APP_VERSION = "wdQJ/4EiYhzsfWyDA1zV7vbhly/CYxwpLeHq0UrULfKo9wf17H2Tjwf8q1ilmWrWcjp726huZAb1junt3qJJ/g==";
+
+}

@@ -1,0 +1,77 @@
+package com.togrulseyid.funnyvideos.fragments;
+
+import java.util.ArrayList;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import com.togrulseyid.funnyvideos.R;
+import com.togrulseyid.funnyvideos.models.ChannelModel;
+
+public class UrlChooserDialogFragment extends DialogFragment {
+
+	private ListView listView;
+	private int position;
+	private ArrayList<String> urls;
+	private ChannelModel model;
+
+	public UrlChooserDialogFragment(ArrayList<String> urls, ChannelModel model,
+			int position) {
+		this.urls = urls;
+		this.position = position;
+		this.model = model;
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater,
+			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+		getDialog().setTitle(
+				getResources().getString(
+						R.string.title_dialog_channel_url_chooser));
+
+		View view = inflater.inflate(R.layout.dialog_channel_url_chooser,
+				container, false);
+
+		listView = (ListView) view.findViewById(R.id.listViewChannelUrlChooser);
+
+		ArrayList<String> urlNames = new ArrayList<String>();
+		for (int i = 1; i <= urls.size(); i++) {
+			urlNames.add("Source " + i);
+		}
+
+		ArrayAdapter<String> modeAdapter = new ArrayAdapter<String>(
+				getActivity(), R.layout.urls_list_item,
+				R.id.textViewUrlsListItem, urlNames);
+
+		listView.setAdapter(modeAdapter);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> adapterView, View view,
+					int channelPosition, long id) {
+				Bundle bundle = new Bundle();
+				Intent intent = new Intent(getActivity(), ChannelActivity.class);
+				bundle.putInt(getString(R.string._B_CHANNEL_ID), position);
+				bundle.putString(getString(R.string._B_CHANNEL_NAME),
+						model.getName());
+				bundle.putString(getString(R.string._B_CHANNEL_URL), model
+						.getUrls().get(channelPosition));
+				intent.putExtras(bundle);
+				startActivity(intent);
+			}
+		});
+
+		return view;
+	}
+
+}

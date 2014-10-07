@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- APP_VERSION -->
+    <string name="_APP_VERSION">3.0.0</string>
+
+    <!-- SCREEN NAMES -->
+    <string name="_SN_APPROVE_ACTIVITY">Approve Screen</string>
+    <!-- SharedPreferences constants -->
+    <string name="_SP_TVApp">spTVApp</string>
+
+    <!-- Activity Rootings -->
+    <string name="_ROOTING_START_ACTIVITY">1</string>
+
+    <!-- Bundle constants -->
+    <string name="_B_SELECTED_VIDEO_ITEM">bVideoItem</string>
+    <string name="_B_PREFERENCE_OBJECT">bPreferenceObject</string>
+
+    <!-- Request constants -->
+    <string name="_REQUEST_DEFAULT">0</string>
+
+    <!-- Respons constants -->
+    <string name="_RESPONSE_DEFAULT">1</string>
+
+    <!-- Patterns -->
+    <string name="_PATTERN_CHANNEL_NAME"><![CDATA[<center>Cahnnel <b><font color = #a5030d>%1$s</font></b></center>]]></string>
+
+    <!-- Asset Files -->
+    <string name="_AS_CHANNELS">channels.txt</string>
+
+</resources>

@@ -1,0 +1,13 @@
+package com.togrulseyid.funnyvideos.models;
+
+import java.io.Serializable;
+
+public class LocalSettingModel implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	private boolean saveSession;
+	private boolean notification;
+	private String ringtone;
+	private boolean vibrate;
+}

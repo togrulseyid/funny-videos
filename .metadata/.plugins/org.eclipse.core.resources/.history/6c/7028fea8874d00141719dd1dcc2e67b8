@@ -1,0 +1,209 @@
+package com.togrulseyid.funnyvideos.operations;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
+
+import android.content.Context;
+import android.util.Log;
+
+import com.togrulseyid.funnyvideos.constants.BusinessConstants;
+import com.togrulseyid.funnyvideos.constants.MessageConstants;
+import com.togrulseyid.funnyvideos.constants.UrlConstants;
+import com.togrulseyid.funnyvideos.models.CoreModel;
+import com.togrulseyid.funnyvideos.models.VideoListModel;
+
+public class NetworkOperations {
+
+	private Context context;
+
+	public NetworkOperations(Context context) {
+
+		this.context = context;
+	}
+
+	public CoreModel checkAppVersion(CoreModel model) {
+
+		model = (CoreModel) SPProvider.initializeObject(model, context);
+
+		if (!Utility.checkNetwork(context)) {
+			model.setMessageId(MessageConstants.NO_NETWORK_CONNECTION);
+		} else if (!Utility.checkInternetConnection()) {
+			model.setMessageId(MessageConstants.NO_INTERNET_CONNECTION);
+		} else {
+			try {
+
+				ObjectConvertor<CoreModel> objectConvertorModel = new ObjectConvertor<CoreModel>();
+
+				String result = postAndResponseString(
+						objectConvertorModel.getClassString(model),
+						urlChecker(Utility.decrypt(
+								UrlConstants.URL_CHECK_APP_VERSION,
+								Utility.getAppSignature(context))), 4000, 4000);
+
+				model = objectConvertorModel.getClassObject(result,
+						CoreModel.class);
+
+				return model;
+
+			} catch (ClientProtocolException ex) {
+				model.setMessageId(MessageConstants.EXCEPTION_ERROR);
+			} catch (IOException ex) {
+				model.setMessageId(MessageConstants.EXCEPTION_ERROR);
+			}
+		}
+
+		return model;
+	}
+
+	public VideoListModel getVideosListModel(CoreModel coreModel) {
+
+		coreModel = (CoreModel) SPProvider.initializeObject(coreModel, context);
+		VideoListModel model = new VideoListModel();
+
+		if (!Utility.checkNetwork(context)) {
+			model.setMessageId(MessageConstants.NO_NETWORK_CONNECTION);
+		} else if (!Utility.checkInternetConnection()) {
+			model.setMessageId(MessageConstants.NO_INTERNET_CONNECTION);
+		} else {
+
+			try {
+
+				ObjectConvertor<CoreModel> objectConvertorModel = new ObjectConvertor<CoreModel>();
+
+				String result = postAndResponseString(
+						objectConvertorModel.getClassString(coreModel),
+						urlGenerator(Utility.decrypt(
+								UrlConstants.URL_VIDEOS_LIST,
+								Utility.getAppSignature(context)), coreModel),
+						BusinessConstants.CONNECTION_TIMEOUT,
+						BusinessConstants.BUSINESS_DATA_TIMEOUT);
+
+				ObjectConvertor<VideoListModel> objectConvertorUserModel = new ObjectConvertor<VideoListModel>();
+				model = objectConvertorUserModel.getClassObject(
+						Utility.decrypt(result,
+								Utility.getAppSignature(context)),
+						VideoListModel.class);
+
+				model.setMessageId(MessageConstants.SUCCESSFUL);
+
+			} catch (ClientProtocolException ex) {
+				model.setMessageId(MessageConstants.UN_SUCCESSFUL);
+			} catch (IOException ex) {
+				model.setMessageId(MessageConstants.UN_SUCCESSFUL);
+			}
+
+		}
+
+		return model;
+	}
+
+	
+	
+	
+	
+	public VideoListModel getNotificationVideosListModel(CoreModel coreModelx) {
+
+		coreModel = (CoreModel) SPProvider.initializeObject(coreModel, context);
+		VideoListModel model = new VideoListModel();
+
+		if (!Utility.checkNetwork(context)) {
+			model.setMessageId(MessageConstants.NO_NETWORK_CONNECTION);
+		} else if (!Utility.checkInternetConnection()) {
+			model.setMessageId(MessageConstants.NO_INTERNET_CONNECTION);
+		} else {
+
+			try {
+
+				ObjectConvertor<CoreModel> objectConvertorModel = new ObjectConvertor<CoreModel>();
+
+				String result = postAndResponseString(
+						objectConvertorModel.getClassString(coreModel),
+						urlGenerator(Utility.decrypt(
+								UrlConstants.URL_GCM_NOTIFICATIONS_VIDEOS_LIST,
+								Utility.getAppSignature(context)), coreModel),
+						BusinessConstants.CONNECTION_TIMEOUT,
+						BusinessConstants.BUSINESS_DATA_TIMEOUT);
+
+				ObjectConvertor<VideoListModel> objectConvertorUserModel = new ObjectConvertor<VideoListModel>();
+				model = objectConvertorUserModel.getClassObject(
+						Utility.decrypt(result,
+								Utility.getAppSignature(context)),
+						VideoListModel.class);
+
+				model.setMessageId(MessageConstants.SUCCESSFUL);
+
+			} catch (ClientProtocolException ex) {
+				model.setMessageId(MessageConstants.UN_SUCCESSFUL);
+			} catch (IOException ex) {
+				model.setMessageId(MessageConstants.UN_SUCCESSFUL);
+			}
+
+		}
+
+		return model;
+	}
+
+	private String urlGenerator(String encrypted, CoreModel coreModel) {
+		return encrypted + "id=" + coreModel.getStartId() + "&max="
+				+ coreModel.getMaxCount();
+	}
+
+	private String postAndResponseString(String convertedModel, String url,
+			int connectionTimeout, int businessDataTimeout)
+			throws ClientProtocolException, IOException {
+
+		Log.d("testA", "input : " + convertedModel);
+
+		HttpPost httpPost = new HttpPost(url);
+
+		StringEntity entity = new StringEntity(convertedModel, HTTP.UTF_16);
+		httpPost.setEntity(entity);
+		HttpClient httpClient = getClient(connectionTimeout,
+				businessDataTimeout);
+		HttpResponse response = httpClient.execute(httpPost);
+
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(response.getEntity().getContent()));
+		StringBuilder result = new StringBuilder();
+
+		String line = null;
+
+		while ((line = bufferedReader.readLine()) != null) {
+			result.append(line);
+		}
+
+		Log.d("testA", "output : " + result.toString());
+
+		return result.toString();
+	}
+
+	private HttpClient getClient(int connectionTimeOut, int businessDataTimeout) {
+
+		HttpClient httpClient = null;
+		HttpParams httpParameters = new BasicHttpParams();
+		HttpConnectionParams.setConnectionTimeout(httpParameters,
+				connectionTimeOut);
+		HttpConnectionParams.setSoTimeout(httpParameters, businessDataTimeout);
+
+		httpClient = new DefaultHttpClient(httpParameters);
+
+		return httpClient;
+	}
+
+	private String urlChecker(String url) {
+		return url;
+	}
+
+}

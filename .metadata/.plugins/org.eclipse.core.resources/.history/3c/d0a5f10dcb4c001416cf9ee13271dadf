@@ -1,0 +1,17 @@
+package com.togrulseyid.funnyvideos.services;
+
+import android.app.IntentService;
+import android.content.Intent;
+
+public class SendDataToServer extends IntentService {
+
+	public SendDataToServer(String name, Object object) {
+		super(name);
+	}
+
+	@Override
+	protected void onHandleIntent(Intent intent) {
+
+	}
+
+}

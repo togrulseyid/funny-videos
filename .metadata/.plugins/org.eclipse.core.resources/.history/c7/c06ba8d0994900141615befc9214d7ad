@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="video_title_text_normal">#857fa87f</color>
+    <color name="listViewCacheColorHint">#00000000</color>
+    <color name="listview_videos_list_fragment_divider_height">#19000000</color>
+
+</resources>

@@ -1,0 +1,286 @@
+package com.togrulseyid.funnyvideos.fragments;
+
+import java.util.ArrayList;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.togrulseyid.funnyvideos.R;
+import com.togrulseyid.funnyvideos.activities.VideoPlayerActivity;
+import com.togrulseyid.funnyvideos.adapters.VideosListAdapter;
+import com.togrulseyid.funnyvideos.constants.MessageConstants;
+import com.togrulseyid.funnyvideos.models.CoreModel;
+import com.togrulseyid.funnyvideos.models.VideoListModel;
+import com.togrulseyid.funnyvideos.models.VideoModel;
+import com.togrulseyid.funnyvideos.operations.NetworkOperations;
+import com.togrulseyid.funnyvideos.views.InfoToast;
+
+public class VideosListFragment extends Fragment {
+
+	private static final int MAX_COUNT = 5;
+	private PullToRefreshListView listView;
+	private TextView textViewTapToRefresh;
+	private VideosListAdapter adapter;
+	private ArrayList<VideoModel> models;
+	private VideosListAsynTask videosListAsynTask;
+	private InfoToast infoToast;
+
+	@Override
+	public View onCreateView(LayoutInflater inflater,
+			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+		View view = inflater.inflate(R.layout.fragment_videos_list, container,
+				false);
+
+		listView = (PullToRefreshListView) view
+				.findViewById(R.id.listViewFragmentVideosList);
+		textViewTapToRefresh = (TextView) view
+				.findViewById(R.id.textViewTapToRefresh);
+
+		models = new ArrayList<VideoModel>();
+		adapter = new VideosListAdapter(getActivity(), models);
+		listView.setAdapter(adapter);
+		listView.setOnItemClickListener(new CustomItemOnItemClickListener(
+				getActivity()));
+
+		listView.setOnRefreshListener(new CustomOnRefreshListener());
+
+		textViewTapToRefresh.setOnClickListener(new FVOnClickListener());
+		refreshList(true);
+
+		return view;
+	}
+
+	CoreModel coreModel = new CoreModel();
+
+	private void refreshList(boolean isUp) {
+
+		setMenuVisibility(false);
+		if (isUp) {
+			models.clear();
+			adapter.notifyDataSetChanged();
+			models.add(new VideoModel());
+
+			listView.setMode(Mode.DISABLED);
+			listView.setRefreshing(false);
+
+			videosListAsynTask = new VideosListAsynTask(getActivity(), true);
+			coreModel.setStartId(1);
+			coreModel.setMaxCount(MAX_COUNT);
+			videosListAsynTask.execute(coreModel);
+		} else {
+			// load more items
+
+			videosListAsynTask = new VideosListAsynTask(getActivity(), false);
+			coreModel.setStartId(coreModel.getStartId()
+					+ coreModel.getMaxCount());
+			coreModel.setMaxCount(coreModel.getMaxCount());
+			videosListAsynTask.execute(coreModel);
+
+		}
+
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.main, menu);
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		switch (item.getItemId()) {
+		case R.id.title:
+
+			break;
+
+		default:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	private class VideosListAsynTask extends
+			AsyncTask<CoreModel, Integer, VideoListModel> {
+
+		private Activity activity;
+		private boolean isRefresh;
+
+		public VideosListAsynTask(Activity activity, boolean isRefresh) {
+			this.activity = activity;
+			this.isRefresh = isRefresh;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+
+			textViewTapToRefresh.setVisibility(View.GONE);
+			listView.setVisibility(View.VISIBLE);
+		}
+
+		@Override
+		protected VideoListModel doInBackground(CoreModel... params) {
+			NetworkOperations networkOperations = new NetworkOperations(
+					activity);
+			return networkOperations.getVideosListModel(params[0]);
+		}
+
+		@Override
+		protected void onPostExecute(VideoListModel result) {
+			super.onPostExecute(result);
+
+			Log.d("testV", "pos" + result.toString());
+			infoToast = new InfoToast(getActivity());
+
+			if (isAdded() && !isCancelled()) {
+				if (result != null && result.getMessageId() != null) {
+					if (result.getMessageId() == MessageConstants.SUCCESSFUL) {
+
+						if (isRefresh) {
+							models.clear();
+						}
+						for (VideoModel videoModel : result.getVideos()) {
+							models.add(videoModel);
+							Log.d("testV",
+									"videoModel: " + videoModel.toString());
+						}
+						adapter.notifyDataSetChanged();
+
+					} else if (result.getMessageId() == MessageConstants.NO_INTERNET_CONNECTION) {
+
+						listView.setVisibility(View.GONE);
+
+						textViewTapToRefresh.setVisibility(View.VISIBLE);
+						textViewTapToRefresh.setText(getResources().getString(
+								R.string.message_internet_connection_problem));
+
+					} else if (result.getMessageId() == MessageConstants.NO_NETWORK_CONNECTION) {
+
+						Log.d("result", "" + result);
+
+						// adapter.notifyDataSetChanged();
+						listView.setVisibility(View.GONE);
+
+						textViewTapToRefresh.setVisibility(View.VISIBLE);
+
+						textViewTapToRefresh.setText(getResources().getString(
+								R.string.message_network_connection_problem));
+
+					} else {
+						infoToast.makeToast(result.getMessageId());
+						// adapter.notifyDataSetChanged();
+					}
+				} else {
+					infoToast.makeToast(MessageConstants.SERVER_ERROR_1);
+					// adapter.notifyDataSetChanged();
+				}
+
+				listView.onRefreshComplete();
+
+				if (models.size() > 1) {
+					listView.setMode(Mode.PULL_FROM_END);
+
+					// When user have friends set list visible
+					textViewTapToRefresh.setVisibility(View.GONE);
+					listView.setVisibility(View.VISIBLE);
+				} else {
+					// listView.setMode(Mode.DISABLED);
+
+					// When user have no friends set list gone
+					textViewTapToRefresh.setVisibility(View.VISIBLE);
+					listView.setVisibility(View.GONE);
+				}
+
+				setMenuVisibility(true);
+
+			}
+
+		}
+
+	}
+
+	class CustomItemOnItemClickListener implements OnItemClickListener {
+
+		private Activity activity;
+
+		public CustomItemOnItemClickListener(Activity activity) {
+			this.activity = activity;
+		}
+
+		@Override
+		public void onItemClick(AdapterView<?> adapterView, View view,
+				int position, long id) {
+
+			Bundle bundle = new Bundle();
+
+			bundle.putSerializable(
+					getResources().getString(R.string._B_SELECTED_VIDEO_ITEM),
+					models.get(position));
+
+			Intent intent = new Intent(activity, VideoPlayerActivity.class);
+			intent.putExtras(bundle);
+
+			startActivity(intent);
+
+		}
+	}
+
+	private class CustomOnRefreshListener implements
+			OnRefreshListener2<ListView> {
+
+		@Override
+		public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+			refreshList(true);
+		}
+
+		@Override
+		public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+			refreshList(false);
+		}
+
+	}
+
+	class FVOnClickListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.textViewTapToRefresh:
+				refreshList(true);
+				break;
+
+			default:
+				break;
+			}
+		}
+
+	}
+	
+	public void clearModels() {
+		models.clear();
+		adapter.notifyDataSetChanged();
+	}
+
+}
