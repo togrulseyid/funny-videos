@@ -52,10 +52,14 @@ public class NetworkOperations {
 						urlChecker(Utility.decrypt(
 								UrlConstants.URL_CHECK_APP_VERSION,
 								Utility.getAppSignature(context))), 4000, 4000);
-
-				model = objectConvertorModel.getClassObject(result,
+				
+				model = objectConvertorModel.getClassObject(
+						Utility.decrypt(result,
+								Utility.getAppSignature(context)),
 						CoreModel.class);
 
+//				Log.d("crypto", model.toString());
+				
 				return model;
 
 			} catch (ClientProtocolException ex) {
@@ -92,12 +96,11 @@ public class NetworkOperations {
 						BusinessConstants.BUSINESS_DATA_TIMEOUT);
 
 				ObjectConvertor<VideoListModel> objectConvertorUserModel = new ObjectConvertor<VideoListModel>();
+				
 				model = objectConvertorUserModel.getClassObject(
 						Utility.decrypt(result,
 								Utility.getAppSignature(context)),
 						VideoListModel.class);
-
-				model.setMessageId(MessageConstants.SUCCESSFUL);
 
 			} catch (ClientProtocolException ex) {
 				model.setMessageId(MessageConstants.UN_SUCCESSFUL);
@@ -110,10 +113,6 @@ public class NetworkOperations {
 		return model;
 	}
 
-	
-	
-	
-	
 	public VideoListModel getNotificationVideosListModel(CoreModel coreModel) {
 
 		coreModel = (CoreModel) SPProvider.initializeObject(coreModel, context);
@@ -143,8 +142,6 @@ public class NetworkOperations {
 								Utility.getAppSignature(context)),
 						VideoListModel.class);
 
-				model.setMessageId(MessageConstants.SUCCESSFUL);
-
 			} catch (ClientProtocolException ex) {
 				model.setMessageId(MessageConstants.UN_SUCCESSFUL);
 			} catch (IOException ex) {
@@ -160,11 +157,11 @@ public class NetworkOperations {
 		return encrypted + "id=" + coreModel.getStartId() + "&max="
 				+ coreModel.getMaxCount();
 	}
-	
-	private String notificationUrlGenerator(String decrypted, CoreModel coreModel) {
+
+	private String notificationUrlGenerator(String decrypted,
+			CoreModel coreModel) {
 		return decrypted + "gcm_id=" + coreModel.getGcm_id();
 	}
-
 
 	private String postAndResponseString(String convertedModel, String url,
 			int connectionTimeout, int businessDataTimeout)
@@ -174,7 +171,7 @@ public class NetworkOperations {
 
 		HttpPost httpPost = new HttpPost(url);
 
-		StringEntity entity = new StringEntity(convertedModel, HTTP.UTF_16);
+		StringEntity entity = new StringEntity(convertedModel, HTTP.UTF_8);
 		httpPost.setEntity(entity);
 		HttpClient httpClient = getClient(connectionTimeout,
 				businessDataTimeout);
@@ -189,8 +186,10 @@ public class NetworkOperations {
 		while ((line = bufferedReader.readLine()) != null) {
 			result.append(line);
 		}
-
+		
+		
 		Log.d("testA", "output : " + result.toString());
+		Log.d("testA", "outputX : " + Utility.decrypt(result.toString(), Utility.getAppSignature(context)));
 
 		return result.toString();
 	}
@@ -213,9 +212,11 @@ public class NetworkOperations {
 	}
 
 	public GCMModel sendGCMToServer(GCMModel gcmModel) {
-		
-		gcmModel = (GCMModel) SPProvider.initializeGCMObject(gcmModel, context);
 
+		Log.d("testGx", "x1: " + gcmModel.toString());
+		gcmModel = SPProvider.initializeGCMObject(gcmModel, context);
+		Log.d("testGx", "x2: " + gcmModel.toString());
+		
 		if (!Utility.checkNetwork(context)) {
 			gcmModel.setMessageId(MessageConstants.NO_NETWORK_CONNECTION);
 		} else if (!Utility.checkInternetConnection()) {
@@ -225,11 +226,6 @@ public class NetworkOperations {
 			try {
 
 				ObjectConvertor<GCMModel> objectConvertorModel = new ObjectConvertor<GCMModel>();
-
-				Log.i("Utility",Utility.decrypt(
-						UrlConstants.URL_GCM_NOTIFICATIONS_SEND_TO_SERVER,
-						Utility.getAppSignature(context)));
-				
 				String result = postAndResponseString(
 						objectConvertorModel.getClassString(gcmModel),
 						Utility.decrypt(
@@ -238,13 +234,15 @@ public class NetworkOperations {
 						BusinessConstants.CONNECTION_TIMEOUT,
 						BusinessConstants.BUSINESS_DATA_TIMEOUT);
 
+
 				ObjectConvertor<GCMModel> objectConvertorUserModel = new ObjectConvertor<GCMModel>();
 				gcmModel = objectConvertorUserModel.getClassObject(
 						Utility.decrypt(result,
 								Utility.getAppSignature(context)),
 						GCMModel.class);
 
-				gcmModel.setMessageId(MessageConstants.SUCCESSFUL);
+				Log.d("testGx", "x3: " + result);
+				Log.d("testGx", "x4: "+ Utility.decrypt(result,	Utility.getAppSignature(context)));
 
 			} catch (ClientProtocolException ex) {
 				gcmModel.setMessageId(MessageConstants.UN_SUCCESSFUL);

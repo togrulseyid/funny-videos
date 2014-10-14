@@ -22,6 +22,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.Signature;
@@ -37,6 +38,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.togrulseyid.funnyvideos.R;
+import com.togrulseyid.funnyvideos.activities.MainActivity;
 import com.togrulseyid.funnyvideos.constants.BusinessConstants;
 import com.togrulseyid.funnyvideos.models.LocalSettingModel;
 
@@ -92,8 +97,8 @@ public class Utility {
 			appSignature = "0" + appSignature;
 		}
 
-		Log.d("testV","appSignature: " + appSignature);
-//		return appSignature;
+		Log.d("testV", "appSignature: " + appSignature);
+		// return appSignature;
 		return "8b31f4fa7fa1bb349d73545066c1a62a";
 	}
 
@@ -185,7 +190,7 @@ public class Utility {
 
 	}
 
-	@SuppressLint("TrulyRandom") 
+	@SuppressLint("TrulyRandom")
 	public static String encrypt(String strToEncrypt, String key) {
 
 		try {
@@ -218,83 +223,85 @@ public class Utility {
 		return null;
 	}
 
-//	public static final File getOuputAdsContentFile(Context context, int adsId) {
-//
-//		File file = new File(
-//				context.getExternalFilesDir(Environment.DIRECTORY_PICTURES
-//						+ File.separator + adsDirectory + File.separator
-//						+ Integer.toString(adsId)), Integer.toString(adsId)
-//						+ jpeg);
-//		return file;
-//	}
-//
-//	public static final File getOutputAdsDir(Context context, int adsId) {
-//
-//		File file = new File(
-//				context.getExternalFilesDir(Environment.DIRECTORY_PICTURES
-//						+ File.separator + adsDirectory),
-//				Integer.toString(adsId));
-//
-//		return file;
-//
-//	}
-//
-//	public boolean clearAdsContent(int adsId, Context context, int dirSelection) {
-//
-//		File dir = null;
-//
-//		if (dirSelection == BusinessConstants.CLEAR_ADS) {
-//			dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES
-//					+ File.separator + adsDirectory + File.separator + adsId);
-//		} else if (dirSelection == BusinessConstants.CLEAR_CORE) {
-//			dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-//		}
-//
-//		if (dir.exists() && dir.isDirectory()) {
-//			if (recycledFiles == null) {
-//				recycledFiles = new ArrayList<File>();
-//			}
-//			deleteDirectory(dir);
-//			for (int i = recycledFiles.size() - 1; i >= 0; i--) {
-//				recycledFiles.get(i).delete();
-//			}
-//		}
-//
-//		recycledFiles = null;
-//
-//		return true;
-//	}
-//
-//	private void deleteDirectory(File rootFile) {
-//		if (rootFile.exists()) {
-//			if (rootFile.isDirectory()) {
-//				recycledFiles.add(rootFile);
-//				File files[] = rootFile.listFiles();
-//				for (File subFile : files) {
-//					if (subFile.isDirectory()) {
-//						deleteDirectory(subFile);
-//					} else {
-//						subFile.delete();
-//					}
-//				}
-//			} else {
-//				rootFile.delete();
-//			}
-//		}
-//	}
-//
-//	public static void sendGoogleAnalytics(String actionName, Activity activity) {
-//
-//		Bundle bundle = new Bundle();
-//		bundle.putString(
-//				activity.getResources().getString(R.string._B_ACTION_NAME),
-//				actionName);
-//		Intent intent = new Intent(activity, GoogleAnalyticsSenderService.class);
-//		intent.putExtras(bundle);
-//		activity.startService(intent);
-//	}
-	
-	
+	// public static final File getOuputAdsContentFile(Context context, int
+	// adsId) {
+	//
+	// File file = new File(
+	// context.getExternalFilesDir(Environment.DIRECTORY_PICTURES
+	// + File.separator + adsDirectory + File.separator
+	// + Integer.toString(adsId)), Integer.toString(adsId)
+	// + jpeg);
+	// return file;
+	// }
+	//
+	// public static final File getOutputAdsDir(Context context, int adsId) {
+	//
+	// File file = new File(
+	// context.getExternalFilesDir(Environment.DIRECTORY_PICTURES
+	// + File.separator + adsDirectory),
+	// Integer.toString(adsId));
+	//
+	// return file;
+	//
+	// }
+	//
+	// public boolean clearAdsContent(int adsId, Context context, int
+	// dirSelection) {
+	//
+	// File dir = null;
+	//
+	// if (dirSelection == BusinessConstants.CLEAR_ADS) {
+	// dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES
+	// + File.separator + adsDirectory + File.separator + adsId);
+	// } else if (dirSelection == BusinessConstants.CLEAR_CORE) {
+	// dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+	// }
+	//
+	// if (dir.exists() && dir.isDirectory()) {
+	// if (recycledFiles == null) {
+	// recycledFiles = new ArrayList<File>();
+	// }
+	// deleteDirectory(dir);
+	// for (int i = recycledFiles.size() - 1; i >= 0; i--) {
+	// recycledFiles.get(i).delete();
+	// }
+	// }
+	//
+	// recycledFiles = null;
+	//
+	// return true;
+	// }
+	//
+	// private void deleteDirectory(File rootFile) {
+	// if (rootFile.exists()) {
+	// if (rootFile.isDirectory()) {
+	// recycledFiles.add(rootFile);
+	// File files[] = rootFile.listFiles();
+	// for (File subFile : files) {
+	// if (subFile.isDirectory()) {
+	// deleteDirectory(subFile);
+	// } else {
+	// subFile.delete();
+	// }
+	// }
+	// } else {
+	// rootFile.delete();
+	// }
+	// }
+	// }
+	//
+	// public static void sendGoogleAnalytics(String actionName, Activity
+	// activity) {
+	//
+	// Bundle bundle = new Bundle();
+	// bundle.putString(
+	// activity.getResources().getString(R.string._B_ACTION_NAME),
+	// actionName);
+	// Intent intent = new Intent(activity, GoogleAnalyticsSenderService.class);
+	// intent.putExtras(bundle);
+	// activity.startService(intent);
+	// }
+
 	public static void hideKeyBoard(EditText editText, Activity activity) {
 		InputMethodManager imm = (InputMethodManager) activity
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -313,8 +320,8 @@ public class Utility {
 		}
 	}
 
-
-	@SuppressLint("NewApi") @SuppressWarnings("deprecation")
+	@SuppressLint("NewApi")
+	@SuppressWarnings("deprecation")
 	public static void setRelativeLayoutBackground(
 			RelativeLayout relativeLayout, Drawable drawable) {
 		if (Build.VERSION.SDK_INT >= 16) {
@@ -324,7 +331,8 @@ public class Utility {
 		}
 	}
 
-	@SuppressLint("NewApi") @SuppressWarnings("deprecation")
+	@SuppressLint("NewApi")
+	@SuppressWarnings("deprecation")
 	public static void setViewBackground(View view, Drawable drawable) {
 		if (Build.VERSION.SDK_INT >= 16) {
 			view.setBackground(drawable);
@@ -343,28 +351,149 @@ public class Utility {
 
 	/*
 	 * Load Resource String by Id
+	 */
+
+	public static int loadgResourcesByString(Context context, String type,
+			String title) {
+		return context.getResources().getIdentifier(title, type,
+				context.getPackageName());
+	}
+
+	/**
+	 * @return Application's version code from the {@code PackageManager}.
+	 */
+	public static int getAppVersion(Context context) {
+		try {
+			PackageInfo packageInfo = context.getPackageManager()
+					.getPackageInfo(context.getPackageName(), 0);
+			return packageInfo.versionCode;
+		} catch (NameNotFoundException e) {
+			// should never happen
+			throw new RuntimeException("Could not get package name: " + e);
+		}
+	}
+
+	/**
+	 * Gets the current registration ID for application on GCM service, if there
+	 * is one.
+	 * <p>
+	 * If result is empty, the app needs to register. @return registration ID,
+	 * or empty string if there is no existing registration ID.
+	 * </p>
 	 * */
-	
-	public static int loadgResourcesByString(Context context, String type, String title) {
-		return context.getResources().getIdentifier(title, type, context.getPackageName());
+	public static String getRegistrationId(Context context) {
+		final SharedPreferences prefs = getGcmPreferences(context);
+		String registrationId = prefs.getString(
+				context.getString(R.string._P_APP_REG_ID), "");
+		if (registrationId.isEmpty()) {
+			// Log.d(TAG, "Registration not found.");
+			return "";
+		}
+		// Check if app was updated; if so, it must clear the registration ID
+		// since the existing regID is not guaranteed to work with the new
+		// app version.
+
+		int registeredVersion = prefs.getInt(
+				context.getString(R.string._P_APP_VERSION), Integer.MIN_VALUE);
+		int currentVersion = Utility.getAppVersion(context);
+		if (registeredVersion != currentVersion) {
+			// Log.d(TAG, "App version changed.");
+			// textViewAppTitle.append("\nApp version changed.");
+			return "";
+		}
+		return registrationId;
+	}
+
+	/**
+	 * @return Application's {@code SharedPreferences}.
+	 */
+	public static SharedPreferences getGcmPreferences(Context context) {
+		// This sample app persists the registration ID in shared preferences,
+		// but how you store the regID in your app is up to you.
+		return context.getSharedPreferences(MainActivity.class.getSimpleName(),
+				Context.MODE_PRIVATE);
+	}
+
+	public static void writeGCMToSharedPreferences(Context context, String gcmID) {
+		final SharedPreferences prefs = Utility.getGcmPreferences(context);
+		prefs.edit()
+				.putBoolean(
+						context.getString(R.string._SP_VIDEO_APP_IS_GCM_SEND),
+						true).commit();
+	}
+
+	public static boolean isSendGCMToServer(Context context) {
+		final SharedPreferences prefs = Utility.getGcmPreferences(context);
+		return prefs.getBoolean(
+				context.getString(R.string._SP_VIDEO_APP_IS_GCM_SEND), false);
 	}
 	
 	
+
+	/**
+	 * Check the device to make sure it has the Google Play Services APK. If it
+	 * doesn't, display a dialog that allows users to download the APK from the
+	 * Google Play Store or enable it in the device's system settings.
+	 */
+	public static boolean checkPlayServices(Activity activity) {
+		int resultCode = GooglePlayServicesUtil
+				.isGooglePlayServicesAvailable(activity);
+		if (resultCode != ConnectionResult.SUCCESS) {
+			if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+				GooglePlayServicesUtil.getErrorDialog(resultCode, activity,
+						BusinessConstants.PLAY_SERVICES_RESOLUTION_REQUEST)
+						.show();
+			} else {
+				// Log.d(TAG, "This device is not supported.");
+				activity.finish();
+			}
+			return false;
+		}
+		return true;
+	}
+	
+	
+	/**
+	 * Stores the registration ID and the app versionCode in the application's
+	 * {@code SharedPreferences}.
+	 * 
+	 * @param context
+	 *            application's context.
+	 * @param regId
+	 *            registration ID
+	 */
+	public static void storeRegistrationId(Context context, String regId) {
+		final SharedPreferences prefs = Utility.getGcmPreferences(context);
+
+		int appVersion = Utility.getAppVersion(context);
+//		Log.d(TAG, "Saving regId on app version " + appVersion);
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(context.getString(R.string._P_APP_REG_ID), regId);
+		editor.putInt(context.getString(R.string._P_APP_VERSION), appVersion);
+		editor.commit();
+
+	}
+
+
 	public static LocalSettingModel getLocalSettingModel(Context activity) {
-		
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
-		boolean vibrate = sharedPref.getBoolean("notifications_new_message_vibrate", false);
-		boolean notification = sharedPref.getBoolean("notifications_get_notifications", false);
-		boolean saveSession = sharedPref.getBoolean("notifications_last_session", false);
-		
+
+		SharedPreferences sharedPref = PreferenceManager
+				.getDefaultSharedPreferences(activity);
+		boolean vibrate = sharedPref.getBoolean(
+				"notifications_new_message_vibrate", false);
+		boolean notification = sharedPref.getBoolean(
+				"notifications_get_notifications", false);
+		boolean saveSession = sharedPref.getBoolean(
+				"notifications_last_session", false);
+
 		LocalSettingModel localSettingModel = new LocalSettingModel();
-		
+
 		localSettingModel.setNotification(notification);
-		
+
 		localSettingModel.setSaveSession(saveSession);
-		
+
 		localSettingModel.setVibrate(vibrate);
-		
+
 		return localSettingModel;
 	}
 }

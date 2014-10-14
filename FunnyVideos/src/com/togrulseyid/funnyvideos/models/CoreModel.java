@@ -6,7 +6,7 @@ public class CoreModel {
 	private Integer maxCount;
 	private String message;
 	private Integer messageId;
-	private String appVersion;
+	private Integer appVersion;
 	private Integer gcm_id;
 	private String sysLang;
 
@@ -42,11 +42,11 @@ public class CoreModel {
 		this.messageId = messageId;
 	}
 
-	public String getAppVersion() {
+	public Integer getAppVersion() {
 		return appVersion;
 	}
 
-	public void setAppVersion(String appVersion) {
+	public void setAppVersion(Integer appVersion) {
 		this.appVersion = appVersion;
 	}
 

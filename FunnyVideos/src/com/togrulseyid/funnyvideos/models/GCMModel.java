@@ -6,20 +6,7 @@ public class GCMModel {
 	private String message;
 	private Integer messageId;
 	private String sysLang;
-	private String appVersion;
-
-	public GCMModel() {
-	}
-
-	public GCMModel(String gcm, String message, Integer messageId,
-			String sysLang, String appVersion) {
-		super();
-		this.gcm = gcm;
-		this.message = message;
-		this.messageId = messageId;
-		this.sysLang = sysLang;
-		this.appVersion = appVersion;
-	}
+	private Integer appVersion;
 
 	/**
 	 * @return the gcm
@@ -84,7 +71,7 @@ public class GCMModel {
 	/**
 	 * @return the appVersion
 	 */
-	public String getAppVersion() {
+	public Integer getAppVersion() {
 		return appVersion;
 	}
 
@@ -92,7 +79,7 @@ public class GCMModel {
 	 * @param appVersion
 	 *            the appVersion to set
 	 */
-	public void setAppVersion(String appVersion) {
+	public void setAppVersion(Integer appVersion) {
 		this.appVersion = appVersion;
 	}
 

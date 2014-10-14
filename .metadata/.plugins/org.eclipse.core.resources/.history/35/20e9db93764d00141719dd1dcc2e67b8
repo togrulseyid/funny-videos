@@ -1,7 +1,0 @@
-package com.togrulseyid.funnyvideos.models;
-
-import java.io.Serializable;
-
-public class NotificationModel implements Serializable {
-
-}

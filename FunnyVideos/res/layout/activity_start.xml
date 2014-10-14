@@ -13,4 +13,11 @@
         android:contentDescription="@string/app_name"
         android:src="@drawable/ic_launcher" />
 
+    <TextView
+        android:id="@+id/textViewAppTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Large Text"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
 </LinearLayout>

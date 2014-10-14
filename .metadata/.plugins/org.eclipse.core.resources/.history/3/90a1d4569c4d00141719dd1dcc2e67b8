@@ -1,8 +1,0 @@
-package com.togrulseyid.funnyvideos.models;
-
-public class GCMModel {
-
-	String gcm;
-	String sysLang;
-
-}

@@ -2,7 +2,6 @@ package com.togrulseyid.funnyvideos.operations;
 
 import android.content.Context;
 
-import com.togrulseyid.funnyvideos.R;
 import com.togrulseyid.funnyvideos.models.CoreModel;
 import com.togrulseyid.funnyvideos.models.GCMModel;
 
@@ -22,16 +21,12 @@ public class SPProvider {
 		}
 
 		if (model != null) {
-
 			// SharedPreferences sharedPreferences =
 			// context.getSharedPreferences(
 			// context.getResources().getString(R.string._SP_TVApp),
 			// Context.MODE_PRIVATE);
-			model.setAppVersion(context.getResources().getString(
-					R.string._APP_VERSION));
-			model.setSysLang(context.getResources().getConfiguration().locale
-					.getLanguage());
-			// model.setAppSignature(Utility.getAppSignature(context));
+			model.setAppVersion(Utility.getAppVersion(context));
+			model.setSysLang(context.getResources().getConfiguration().locale.getLanguage());
 		}
 
 		if (model != null) {
@@ -42,27 +37,11 @@ public class SPProvider {
 
 	}
 
-	public static Object initializeGCMObject(GCMModel object, Context context) {
-
-		GCMModel model = (GCMModel) object;
-
-		if (model != null) {
-			// SharedPreferences sharedPreferences =
-			// context.getSharedPreferences(
-			// context.getResources().getString(R.string._SP_TVApp),
-			// Context.MODE_PRIVATE);
-			model.setAppVersion(context.getResources().getString(
-					R.string._APP_VERSION));
-			model.setSysLang(context.getResources().getConfiguration().locale
-					.getLanguage());
-		}
-
-		if (model != null) {
-			return model;
-		} else {
-			return object;
-		}
-
+	public static GCMModel initializeGCMObject(GCMModel model, Context context) {
+		model.setAppVersion(Utility.getAppVersion(context));
+		model.setSysLang(context.getResources().getConfiguration().locale
+				.getLanguage());
+		return model;
 	}
 
 }

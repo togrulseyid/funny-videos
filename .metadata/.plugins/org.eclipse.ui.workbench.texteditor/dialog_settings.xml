@@ -3,26 +3,26 @@
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="257" key="DIALOG_WIDTH"/>
 		<item value="95" key="DIALOG_Y_ORIGIN"/>
-		<item value="381" key="DIALOG_HEIGHT"/>
 		<item value="971" key="DIALOG_X_ORIGIN"/>
+		<item value="381" key="DIALOG_HEIGHT"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
-		<item value="false" key="isRegEx"/>
 		<item value="false" key="casesensitive"/>
+		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="Start" key="selection"/>
+		<item value="AppVer" key="selection"/>
 		<list key="findhistory">
-			<item value="Start"/>
-			<item value="writeGCMToSharedPreferences"/>
-			<item value="_SP_TVApp"/>
-			<item value="haredPreferences"/>
-			<item value="writeGCMToPreference"/>
-			<item value="writeGCMToPereference"/>
-			<item value="PROPERTY_REG_ID"/>
-			<item value="getGcmPreferences"/>
+			<item value="appver"/>
+			<item value="app"/>
+			<item value="MessageConstants.SUCCESSFUL"/>
+			<item value="output"/>
+			<item value="getClient"/>
+			<item value="setRequestMethod"/>
+			<item value="sendGCMToServer"/>
+			<item value="testA"/>
 		</list>
 		<list key="replacehistory">
 			<item value="_SP_Video_App"/>

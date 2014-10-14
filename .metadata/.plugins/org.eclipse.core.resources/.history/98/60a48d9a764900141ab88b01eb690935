@@ -1,8 +1,0 @@
-package com.togrulseyid.funnyvideos.constants;
-
-public class UrlConstants {
-
-	public static final String URL_CHANNELS_LIST = "http://cinedonkey.com/android/video_app/funny/reader.php?";
-	public static final String URL_CHECK_APP_VERSION = "http://cinedonkey.com/android/video_app/funny/app_version.php";
-
-}
