@@ -1,6 +1,7 @@
 package com.togrulseyid.funnyvideos.activities;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,9 +14,13 @@ import android.widget.TextView;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.togrulseyid.funnyvideos.R;
 import com.togrulseyid.funnyvideos.constants.MessageConstants;
+import com.togrulseyid.funnyvideos.constants.UrlConstants;
 import com.togrulseyid.funnyvideos.models.CoreModel;
 import com.togrulseyid.funnyvideos.models.GCMModel;
+import com.togrulseyid.funnyvideos.models.VideoListModel;
+import com.togrulseyid.funnyvideos.models.VideoModel;
 import com.togrulseyid.funnyvideos.operations.NetworkOperations;
+import com.togrulseyid.funnyvideos.operations.ObjectConvertor;
 import com.togrulseyid.funnyvideos.operations.Utility;
 
 public class StartActivity extends Activity {
@@ -38,6 +43,38 @@ public class StartActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_start);
+		
+		
+		VideoListModel videoListModel = new VideoListModel();
+
+		ArrayList<VideoModel> list = new ArrayList<VideoModel>();
+		
+		VideoModel model = new VideoModel();
+		model.setSrc("http://");
+		model.setTitle("9Gags");
+		list.add(model);
+		
+		VideoModel model2 = new VideoModel();
+		model2.setSrc("http2://");
+		model2.setTitle("9Gags2");
+		list.add(model2);
+		
+		videoListModel.setVideos(list);
+		
+		ObjectConvertor<VideoListModel> objectConvertor = new ObjectConvertor<VideoListModel>();
+		
+		String result = null;
+		try {
+			result = objectConvertor.getClassString(videoListModel);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		Log.d("model", result);
+		
+		finish();
 		
 		activity = this;
 		

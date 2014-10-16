@@ -34,5 +34,6 @@
     <!-- PROPERTIES -->
     <string name="_P_APP_REG_ID">pAppRegId</string>
     <string name="_P_APP_VERSION">pAppVersion</string>
+    <string name="_P_APP_LAST_SESSION_ID">pAppLastSessionID</string>
     
 </resources>

@@ -1,6 +1,6 @@
 package com.togrulseyid.funnyvideos.models;
 
-public class GCMModel {
+public class GCMModel extends CoreModel{
 
 	private String gcm;
 	private String message;

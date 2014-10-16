@@ -7,7 +7,7 @@
     <string name="action_refresh_videos_list_fragment">Refresh</string>
     <string name="action_share">Share</string>
     <string name="title_activity_video_player">VideoPlayerActivity</string>
-    <string name="title_update_app">You Must update App!</string>
+    <string name="title_update_app">You have to update App to continue!</string>
     
     <!-- Menu titles -->
     <string name="action_refresh">Refresh</string>

@@ -33,6 +33,7 @@ import com.togrulseyid.funnyvideos.models.CoreModel;
 import com.togrulseyid.funnyvideos.models.VideoListModel;
 import com.togrulseyid.funnyvideos.models.VideoModel;
 import com.togrulseyid.funnyvideos.operations.NetworkOperations;
+import com.togrulseyid.funnyvideos.operations.Utility;
 import com.togrulseyid.funnyvideos.views.InfoToast;
 
 public class VideosListFragment extends Fragment {
@@ -85,7 +86,8 @@ public class VideosListFragment extends Fragment {
 			listView.setRefreshing(false);
 
 			videosListAsynTask = new VideosListAsynTask(getActivity(), true);
-			coreModel.setStartId(1);
+			coreModel.setStartId(Utility
+					.getLastSessionFromPreference(getActivity()));
 			coreModel.setMaxCount(MAX_COUNT);
 			videosListAsynTask.execute(coreModel);
 		} else {
@@ -167,6 +169,9 @@ public class VideosListFragment extends Fragment {
 									"videoModel: " + videoModel.toString());
 						}
 						adapter.notifyDataSetChanged();
+
+						Utility.saveLastSessionToPreference(getActivity(),
+								models.size());
 
 					} else if (result.getMessageId() == MessageConstants.NO_INTERNET_CONNECTION) {
 

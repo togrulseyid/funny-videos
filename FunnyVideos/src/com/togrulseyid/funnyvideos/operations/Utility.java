@@ -427,8 +427,6 @@ public class Utility {
 		return prefs.getBoolean(
 				context.getString(R.string._SP_VIDEO_APP_IS_GCM_SEND), false);
 	}
-	
-	
 
 	/**
 	 * Check the device to make sure it has the Google Play Services APK. If it
@@ -451,8 +449,7 @@ public class Utility {
 		}
 		return true;
 	}
-	
-	
+
 	/**
 	 * Stores the registration ID and the app versionCode in the application's
 	 * {@code SharedPreferences}.
@@ -466,14 +463,13 @@ public class Utility {
 		final SharedPreferences prefs = Utility.getGcmPreferences(context);
 
 		int appVersion = Utility.getAppVersion(context);
-//		Log.d(TAG, "Saving regId on app version " + appVersion);
+		// Log.d(TAG, "Saving regId on app version " + appVersion);
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putString(context.getString(R.string._P_APP_REG_ID), regId);
 		editor.putInt(context.getString(R.string._P_APP_VERSION), appVersion);
 		editor.commit();
 
 	}
-
 
 	public static LocalSettingModel getLocalSettingModel(Context activity) {
 
@@ -495,5 +491,36 @@ public class Utility {
 		localSettingModel.setVibrate(vibrate);
 
 		return localSettingModel;
+	}
+
+	public static void saveLastSessionToPreference(Activity activity,
+			int sessionID) {
+		SharedPreferences sharedPref = PreferenceManager
+				.getDefaultSharedPreferences(activity);
+		boolean saveSession = sharedPref.getBoolean(
+				"notifications_last_session", false);
+		if (saveSession) {
+			PreferenceManager
+					.getDefaultSharedPreferences(activity)
+					.edit()
+					.putInt(activity.getString(R.string._P_APP_LAST_SESSION_ID),
+							0);
+		}
+	}
+
+	public static int getLastSessionFromPreference(Activity activity) {
+		SharedPreferences sharedPref = PreferenceManager
+				.getDefaultSharedPreferences(activity);
+		boolean saveSession = sharedPref.getBoolean(
+				"notifications_last_session", false);
+		if (saveSession) {
+			return PreferenceManager
+					.getDefaultSharedPreferences(activity)
+					.getInt(activity.getString(R.string._P_APP_LAST_SESSION_ID),
+							0);
+		} else {
+			return 0;
+		}
+
 	}
 }
