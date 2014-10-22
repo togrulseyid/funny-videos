@@ -2,94 +2,78 @@ package com.togrulseyid.funnyvideos.models;
 
 public class CoreModel {
 
-	private Integer startId;
-	private Integer maxCount;
+	private Integer coreId;
 	private String message;
 	private Integer messageId;
 	private Integer appVersion;
-	private Integer gcm_id;
 	private String sysLang;
-
-	public Integer getStartId() {
-		return startId;
+	/**
+	 * @return the coreId
+	 */
+	public Integer getCoreId() {
+		return coreId;
 	}
-
-	public void setStartId(Integer startId) {
-		this.startId = startId;
+	/**
+	 * @param coreId the coreId to set
+	 */
+	public void setCoreId(Integer coreId) {
+		this.coreId = coreId;
 	}
-
-	public Integer getMaxCount() {
-		return maxCount;
-	}
-
-	public void setMaxCount(Integer endId) {
-		this.maxCount = endId;
-	}
-
+	/**
+	 * @return the message
+	 */
 	public String getMessage() {
 		return message;
 	}
-
+	/**
+	 * @param message the message to set
+	 */
 	public void setMessage(String message) {
 		this.message = message;
 	}
-
+	/**
+	 * @return the messageId
+	 */
 	public Integer getMessageId() {
 		return messageId;
 	}
-
+	/**
+	 * @param messageId the messageId to set
+	 */
 	public void setMessageId(Integer messageId) {
 		this.messageId = messageId;
 	}
-
+	/**
+	 * @return the appVersion
+	 */
 	public Integer getAppVersion() {
 		return appVersion;
 	}
-
+	/**
+	 * @param appVersion the appVersion to set
+	 */
 	public void setAppVersion(Integer appVersion) {
 		this.appVersion = appVersion;
 	}
-
-	/**
-	 * @return the gcm_id
-	 */
-	public Integer getGcm_id() {
-		return gcm_id;
-	}
-
-	/**
-	 * @param gcm_id
-	 *            the gcm_id to set
-	 */
-	public void setGcm_id(Integer gcm_id) {
-		this.gcm_id = gcm_id;
-	}
-
 	/**
 	 * @return the sysLang
 	 */
 	public String getSysLang() {
 		return sysLang;
 	}
-
 	/**
-	 * @param sysLang
-	 *            the sysLang to set
+	 * @param sysLang the sysLang to set
 	 */
 	public void setSysLang(String sysLang) {
 		this.sysLang = sysLang;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "CoreModel [startId=" + startId + ", maxCount=" + maxCount
-				+ ", message=" + message + ", messageId=" + messageId
-				+ ", appVersion=" + appVersion + ", gcm_id=" + gcm_id
+		return "CoreModel [coreId=" + coreId + ", message=" + message
+				+ ", messageId=" + messageId + ", appVersion=" + appVersion
 				+ ", sysLang=" + sysLang + "]";
 	}
 

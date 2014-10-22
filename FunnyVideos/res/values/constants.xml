@@ -9,6 +9,7 @@
     <!-- SharedPreferences constants -->
     <string name="_SP_TVApp">spTVApp</string>
     <string name="_SP_VIDEO_APP_IS_GCM_SEND">spVideoAppIsGCMSend</string>
+    <string name="_SP_VIDEO_APP_GCM">spVideoAppGCM</string>
 
     <!-- Activity Rootings -->
     <string name="_ROOTING_START_ACTIVITY">1</string>
@@ -17,6 +18,7 @@
     <string name="_B_SELECTED_VIDEO_ITEM">bVideoItem</string>
     <string name="_B_PREFERENCE_OBJECT">bPreferenceObject</string>
     <string name="_B_NOTIFICATION_OBJECT">bNotificationObject</string>
+    <string name="_B_BOOL_IS_NOTIFICATION">bBoolIsNotification</string>
 
     <!-- Request constants -->
     <string name="_REQUEST_DEFAULT">0</string>

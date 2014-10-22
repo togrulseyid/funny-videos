@@ -31,6 +31,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -403,6 +404,14 @@ public class Utility {
 		}
 		return registrationId;
 	}
+	
+	public static String getDeviceId(Context context) {
+		TelephonyManager telephonyManager = (TelephonyManager) context
+				.getSystemService(Context.TELEPHONY_SERVICE);
+		return telephonyManager.getDeviceId();
+	}
+	
+	
 
 	/**
 	 * @return Application's {@code SharedPreferences}.
@@ -412,6 +421,11 @@ public class Utility {
 		// but how you store the regID in your app is up to you.
 		return context.getSharedPreferences(MainActivity.class.getSimpleName(),
 				Context.MODE_PRIVATE);
+	}
+	
+	public static String getGCM(Context context) {
+		return getGcmPreferences(context).getString(
+				context.getString(R.string._SP_VIDEO_APP_GCM), null);
 	}
 
 	public static void writeGCMToSharedPreferences(Context context, String gcmID) {
@@ -453,11 +467,8 @@ public class Utility {
 	/**
 	 * Stores the registration ID and the app versionCode in the application's
 	 * {@code SharedPreferences}.
-	 * 
-	 * @param context
-	 *            application's context.
-	 * @param regId
-	 *            registration ID
+	 * @param context application's context.
+	 * @param regId registration ID
 	 */
 	public static void storeRegistrationId(Context context, String regId) {
 		final SharedPreferences prefs = Utility.getGcmPreferences(context);
@@ -509,15 +520,20 @@ public class Utility {
 	}
 
 	public static int getLastSessionFromPreference(Activity activity) {
+		
 		SharedPreferences sharedPref = PreferenceManager
 				.getDefaultSharedPreferences(activity);
+		
 		boolean saveSession = sharedPref.getBoolean(
 				"notifications_last_session", false);
+		
 		if (saveSession) {
+			
 			return PreferenceManager
 					.getDefaultSharedPreferences(activity)
 					.getInt(activity.getString(R.string._P_APP_LAST_SESSION_ID),
 							0);
+			
 		} else {
 			return 0;
 		}

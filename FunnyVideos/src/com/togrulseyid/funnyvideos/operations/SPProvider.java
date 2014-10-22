@@ -21,12 +21,9 @@ public class SPProvider {
 		}
 
 		if (model != null) {
-			// SharedPreferences sharedPreferences =
-			// context.getSharedPreferences(
-			// context.getResources().getString(R.string._SP_TVApp),
-			// Context.MODE_PRIVATE);
 			model.setAppVersion(Utility.getAppVersion(context));
-			model.setSysLang(context.getResources().getConfiguration().locale.getLanguage());
+			model.setSysLang(context.getResources().getConfiguration().locale
+					.getLanguage());
 		}
 
 		if (model != null) {

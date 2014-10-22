@@ -3,7 +3,9 @@ package com.togrulseyid.funnyvideos.activities;
 import java.util.List;
 
 import android.annotation.TargetApi;
+import android.app.IntentService;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.media.Ringtone;
@@ -23,7 +25,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.togrulseyid.funnyvideos.R;
-//import android.util.Log;
+import com.togrulseyid.funnyvideos.models.LocalSettingModel;
+import com.togrulseyid.funnyvideos.operations.Utility;
+import com.togrulseyid.funnyvideos.services.UserInfoSyncService;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -47,11 +51,14 @@ public class SettingsActivity extends PreferenceActivity implements
 	 */
 	private static final boolean ALWAYS_SIMPLE_PREFS = false;
 
-	@SuppressWarnings("deprecation")
+	LocalSettingModel localSettingModel;
+
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 
+		localSettingModel = Utility
+				.getLocalSettingModel(getApplicationContext());
 
 		if (!isSimplePreferences(this)) {
 			return;
@@ -70,7 +77,6 @@ public class SettingsActivity extends PreferenceActivity implements
 		addPreferencesFromResource(R.xml.pref_notification);
 
 	}
-
 
 	/** {@inheritDoc} */
 	@Override
@@ -113,12 +119,11 @@ public class SettingsActivity extends PreferenceActivity implements
 	 * to reflect its new value.
 	 */
 	private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
-		
+
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object value) {
 			String stringValue = value.toString();
 
-			
 			if (preference instanceof ListPreference) {
 				// For list preferences, look up the correct display value in
 				// the preference's 'entries' list.
@@ -156,7 +161,7 @@ public class SettingsActivity extends PreferenceActivity implements
 			} else {
 				// For all other preferences, set the summary to the value's
 				// simple string representation.
-				Log.i("Utility","value: " + stringValue);
+				Log.i("Utility", "value: " + stringValue);
 				preference.setSummary(stringValue);
 			}
 			return true;
@@ -180,14 +185,17 @@ public class SettingsActivity extends PreferenceActivity implements
 		// Trigger the listener immediately with the preference's
 		// current value.
 
-		Log.i("Utility","getKey: " + PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), ""));
+		Log.i("Utility",
+				"getKey: "
+						+ PreferenceManager.getDefaultSharedPreferences(
+								preference.getContext()).getString(
+								preference.getKey(), ""));
 		sBindPreferenceSummaryToValueListener.onPreferenceChange(
 				preference,
 				PreferenceManager.getDefaultSharedPreferences(
 						preference.getContext()).getString(preference.getKey(),
 						""));
 	}
-
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public static class GeneralPreferenceFragment extends PreferenceFragment {
@@ -200,7 +208,6 @@ public class SettingsActivity extends PreferenceActivity implements
 			bindPreferenceSummaryToValue(findPreference("notifications_last_session"));
 		}
 	}
-
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public static class NotificationPreferenceFragment extends
@@ -229,6 +236,27 @@ public class SettingsActivity extends PreferenceActivity implements
 							+ sharedPreferences.getBoolean(key, false),
 					Toast.LENGTH_SHORT).show();
 		}
+	}
+
+	@Override
+	protected void onDestroy() {
+
+		boolean lastModel = Utility.getLocalSettingModel(
+				getApplicationContext()).isNotification();
+
+		Log.d("testA","localSettingModel.isNotification" + localSettingModel.isNotification() + "lastModel: "  + lastModel);
+		if (localSettingModel.isNotification() != lastModel) {
+
+			Bundle  bundle = new Bundle();
+			bundle.putBoolean(getString(R.string._B_BOOL_IS_NOTIFICATION), lastModel);
+			Intent service = new Intent(getApplicationContext(),
+					UserInfoSyncService.class);
+			service.putExtras(bundle);
+			startService(service);
+
+		}
+		super.onDestroy();
+
 	}
 
 }

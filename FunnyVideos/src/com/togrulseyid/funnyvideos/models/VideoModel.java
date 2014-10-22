@@ -2,12 +2,9 @@ package com.togrulseyid.funnyvideos.models;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class VideoModel implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private String title;
 	private String src;
 
@@ -25,10 +22,6 @@ public class VideoModel implements Serializable {
 
 	public void setSrc(String src) {
 		this.src = src;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 	@Override

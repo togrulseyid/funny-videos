@@ -29,7 +29,6 @@ import com.togrulseyid.funnyvideos.R;
 import com.togrulseyid.funnyvideos.activities.VideoPlayerActivity;
 import com.togrulseyid.funnyvideos.adapters.VideosListAdapter;
 import com.togrulseyid.funnyvideos.constants.MessageConstants;
-import com.togrulseyid.funnyvideos.models.CoreModel;
 import com.togrulseyid.funnyvideos.models.VideoListModel;
 import com.togrulseyid.funnyvideos.models.VideoModel;
 import com.togrulseyid.funnyvideos.operations.NetworkOperations;
@@ -72,7 +71,7 @@ public class VideosListFragment extends Fragment {
 		return view;
 	}
 
-	CoreModel coreModel = new CoreModel();
+	VideoListModel videoListModel = new VideoListModel();
 
 	private void refreshList(boolean isUp) {
 
@@ -86,18 +85,18 @@ public class VideosListFragment extends Fragment {
 			listView.setRefreshing(false);
 
 			videosListAsynTask = new VideosListAsynTask(getActivity(), true);
-			coreModel.setStartId(Utility
+			videoListModel.setStartId(Utility
 					.getLastSessionFromPreference(getActivity()));
-			coreModel.setMaxCount(MAX_COUNT);
-			videosListAsynTask.execute(coreModel);
+			videoListModel.setMaxCount(MAX_COUNT);
+			videosListAsynTask.execute(videoListModel);
 		} else {
 			// load more items
 
 			videosListAsynTask = new VideosListAsynTask(getActivity(), false);
-			coreModel.setStartId(coreModel.getStartId()
-					+ coreModel.getMaxCount());
-			coreModel.setMaxCount(coreModel.getMaxCount());
-			videosListAsynTask.execute(coreModel);
+			Log.d("id_model","" + videoListModel.getStartId());
+			videoListModel.setStartId(videoListModel.getStartId());
+			videoListModel.setMaxCount(MAX_COUNT);
+			videosListAsynTask.execute(videoListModel);
 
 		}
 
@@ -124,7 +123,7 @@ public class VideosListFragment extends Fragment {
 	}
 
 	private class VideosListAsynTask extends
-			AsyncTask<CoreModel, Integer, VideoListModel> {
+			AsyncTask<VideoListModel, Integer, VideoListModel> {
 
 		private Activity activity;
 		private boolean isRefresh;
@@ -143,7 +142,7 @@ public class VideosListFragment extends Fragment {
 		}
 
 		@Override
-		protected VideoListModel doInBackground(CoreModel... params) {
+		protected VideoListModel doInBackground(VideoListModel... params) {
 			NetworkOperations networkOperations = new NetworkOperations(
 					activity);
 			return networkOperations.getVideosListModel(params[0]);
@@ -152,21 +151,24 @@ public class VideosListFragment extends Fragment {
 		@Override
 		protected void onPostExecute(VideoListModel result) {
 			super.onPostExecute(result);
+			videoListModel = result;
 
-			Log.d("testV", "pos" + result.toString());
 			infoToast = new InfoToast(getActivity());
 
 			if (isAdded() && !isCancelled()) {
+
 				if (result != null && result.getMessageId() != null) {
+
 					if (result.getMessageId() == MessageConstants.SUCCESSFUL) {
 
 						if (isRefresh) {
 							models.clear();
 						}
+
 						for (VideoModel videoModel : result.getVideos()) {
+
 							models.add(videoModel);
-							Log.d("testV",
-									"videoModel: " + videoModel.toString());
+
 						}
 						adapter.notifyDataSetChanged();
 
@@ -182,8 +184,6 @@ public class VideosListFragment extends Fragment {
 								R.string.message_internet_connection_problem));
 
 					} else if (result.getMessageId() == MessageConstants.NO_NETWORK_CONNECTION) {
-
-						Log.d("result", "" + result);
 
 						// adapter.notifyDataSetChanged();
 						listView.setVisibility(View.GONE);
@@ -204,7 +204,7 @@ public class VideosListFragment extends Fragment {
 
 				listView.onRefreshComplete();
 
-				if (models.size() > 1) {
+				if (models.size() >0) {
 					listView.setMode(Mode.PULL_FROM_END);
 
 					// When user have friends set list visible

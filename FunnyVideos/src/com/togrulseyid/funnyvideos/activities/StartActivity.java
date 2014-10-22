@@ -1,12 +1,13 @@
 package com.togrulseyid.funnyvideos.activities;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Window;
 import android.widget.TextView;
@@ -14,13 +15,9 @@ import android.widget.TextView;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.togrulseyid.funnyvideos.R;
 import com.togrulseyid.funnyvideos.constants.MessageConstants;
-import com.togrulseyid.funnyvideos.constants.UrlConstants;
 import com.togrulseyid.funnyvideos.models.CoreModel;
 import com.togrulseyid.funnyvideos.models.GCMModel;
-import com.togrulseyid.funnyvideos.models.VideoListModel;
-import com.togrulseyid.funnyvideos.models.VideoModel;
 import com.togrulseyid.funnyvideos.operations.NetworkOperations;
-import com.togrulseyid.funnyvideos.operations.ObjectConvertor;
 import com.togrulseyid.funnyvideos.operations.Utility;
 
 public class StartActivity extends Activity {
@@ -37,6 +34,17 @@ public class StartActivity extends Activity {
 	private GoogleCloudMessaging gcm;
 	private TextView textViewAppTitle;
 
+	long startTime;
+	long duration;
+	
+	@Override
+	protected void onStart() {
+
+		startTime = System.currentTimeMillis();
+
+		super.onStart();
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE); // Remove title bar
@@ -44,46 +52,12 @@ public class StartActivity extends Activity {
 
 		setContentView(R.layout.activity_start);
 		
-		
-		VideoListModel videoListModel = new VideoListModel();
-
-		ArrayList<VideoModel> list = new ArrayList<VideoModel>();
-		
-		VideoModel model = new VideoModel();
-		model.setSrc("http://");
-		model.setTitle("9Gags");
-		list.add(model);
-		
-		VideoModel model2 = new VideoModel();
-		model2.setSrc("http2://");
-		model2.setTitle("9Gags2");
-		list.add(model2);
-		
-		videoListModel.setVideos(list);
-		
-		ObjectConvertor<VideoListModel> objectConvertor = new ObjectConvertor<VideoListModel>();
-		
-		String result = null;
-		try {
-			result = objectConvertor.getClassString(videoListModel);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		
-		
-		Log.d("model", result);
-		
-		finish();
-		
-		activity = this;
-		
 //		Utility.getGcmPreferences(activity).edit().clear().commit();
+		activity = this;
 
 		textViewAppTitle = (TextView) findViewById(R.id.textViewAppTitle);
 		
 		if (Utility.isSendGCMToServer(getApplicationContext())) {
-			Log.d(TAG, "isSendGCMToServer");
 			
 			textViewAppTitle.append("isSendGCMToServer\t");
 			
@@ -93,8 +67,10 @@ public class StartActivity extends Activity {
 			// Check device for Play Services APK. If check succeeds, proceed
 			// with GCM registration.
 			
+//			timeExecuter("isSendGCMToServer else");
 			if (Utility.checkPlayServices(this)) {
-
+//			timeExecuter("checkPlayServices");
+			
 				// TODO: check if send to server
 				gcm = GoogleCloudMessaging.getInstance(this);
 				
@@ -110,13 +86,12 @@ public class StartActivity extends Activity {
 					
 				}
 				
-
+//				timeExecuter("checkPlayServices end");
 			} else {
 				
 				textViewAppTitle
 						.append("No valid Google Play Services APK found.");
 				
-				Log.d(TAG, "No valid Google Play Services APK found.");
 			}
 		}
 
@@ -134,8 +109,9 @@ public class StartActivity extends Activity {
 		@Override
 		protected void onPostExecute(GCMModel result) {
 			super.onPostExecute(result);
+
+			Log.d("iemi","" + result);
 			
-			Log.d(TAG, "StartAsynTask result: " + result.toString());
 			if (result != null && result.getMessageId() != null) {
 
 				if (result.getMessageId() == MessageConstants.SUCCESSFUL) {
@@ -166,11 +142,11 @@ public class StartActivity extends Activity {
 	 * shared preferences.
 	 */
 	
-	class RegisterInBackgroundAsyncTask  extends AsyncTask<Void, Void, String> {
+	class RegisterInBackgroundAsyncTask  extends AsyncTask<Void, Void, Void> {
 
 		@Override
-		protected String doInBackground(Void... params) {
-
+		protected Void doInBackground(Void... params) {
+//			timeExecuter("RegisterInBackgroundAsyncTask doInBackground ");
 			String msg = "";
 
 			try {
@@ -181,29 +157,18 @@ public class StartActivity extends Activity {
 				
 				regid = gcm.register(SENDER_ID);
 				
-				Log.d(TAG, "" + regid);
-				
 				msg = "Device registered, registration ID=" + regid;
 
-				// You should send the registration ID to your server over
-				// HTTP, so it
-				// can use GCM/HTTP or CCS to send messages to your app.
-				/**
-				 * Sends the registration ID to your server over HTTP, so it can use
-				 * GCM/HTTP or CCS to send messages to your app. Not needed for this demo
-				 * since the device sends upstream messages to a server that echoes back the
-				 * message using the 'from' address in the message.
-				 */
+				// Send the registration ID to your server over HTTP, so it can use GCM/HTTP or CCS to send messages to your app.
+
+				// get Telephone IMEI address
+				TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+				String imei = telephonyManager.getDeviceId();
 				GCMModel gcmModel = new GCMModel();
 				gcmModel.setGcm(regid);
-				new StartAsynTask().execute(gcmModel);
+				gcmModel.setImei(imei);	
 				
-
-				// For this demo: we don't need to send it because the
-				// device will send
-				// upstream messages to a server that echo back the message
-				// using the
-				// 'from' address in the message.
+				new StartAsynTask().execute(gcmModel);
 
 				// Persist the regID - no need to register again.
 				Utility.storeRegistrationId(activity, regid);
@@ -214,7 +179,10 @@ public class StartActivity extends Activity {
 				// Require the user to click a button again, or perform
 				// exponential back-off.
 			}
-			return msg;
+			
+			Log.d(TAG,"" + msg);
+//			timeExecuter("RegisterInBackgroundAsyncTask");
+			return null;
 		}
 
 	}
@@ -224,6 +192,7 @@ public class StartActivity extends Activity {
 
 		@Override
 		protected CoreModel doInBackground(Void... params) {
+//			timeExecuter("CheckAppVersionAsynTask doInBackground");
 			NetworkOperations networkOperations = new NetworkOperations(
 					getApplicationContext());
 
@@ -234,21 +203,42 @@ public class StartActivity extends Activity {
 		protected void onPostExecute(CoreModel result) {
 			super.onPostExecute(result);
 
+//			timeExecuter("CheckAppVersionAsynTask onPostExecute if before");
 			if (result != null
-					&& result.getMessageId() == MessageConstants.APP_VERSION_INCORRECT) {
-
-				startActivity(new Intent(getApplicationContext(),
-						AppUpdateActivity.class));
-				finish();
-
-			} else {
+					&& result.getMessageId() == MessageConstants.SUCCESSFUL) {
 
 				startActivity(new Intent(getApplicationContext(),
 						MainActivity.class));
 				finish();
+				
+
+			} else {
+				startActivity(new Intent(getApplicationContext(),
+						AppUpdateActivity.class));
+				finish();
 			}
+//			timeExecuter("CheckAppVersionAsynTask onPostExecute");
 		}
 
 	}
+	
+	
+	@Override
+	protected void onDestroy() {
+		
+//		Intent service = new Intent(activity, UserInfoSyncService.class);
+//		activity.startService(service);
+//		getDeviceId		
+		
+//		timeExecuter("onDestroy");
+		
+		super.onDestroy();
+	}
+	
+//	void timeExecuter(String x) {
+//		duration = (System.currentTimeMillis() - startTime) / 1000; 
+//		Log.d("duration",  x + " duration: " + duration);
+//		
+//	}
 
 }

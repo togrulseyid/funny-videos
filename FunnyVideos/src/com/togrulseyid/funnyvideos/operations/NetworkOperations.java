@@ -23,6 +23,7 @@ import com.togrulseyid.funnyvideos.constants.MessageConstants;
 import com.togrulseyid.funnyvideos.constants.UrlConstants;
 import com.togrulseyid.funnyvideos.models.CoreModel;
 import com.togrulseyid.funnyvideos.models.GCMModel;
+import com.togrulseyid.funnyvideos.models.SettingNotificationModel;
 import com.togrulseyid.funnyvideos.models.VideoListModel;
 
 public class NetworkOperations {
@@ -30,13 +31,22 @@ public class NetworkOperations {
 	private Context context;
 
 	public NetworkOperations(Context context) {
-
 		this.context = context;
 	}
 
-	public CoreModel checkAppVersion(CoreModel model) {
+	private String urlGenerator(String decryptedUrl,
+			VideoListModel videoListModel) {
+		return decryptedUrl + "id=" + videoListModel.getStartId() + "&max="
+				+ videoListModel.getMaxCount();
+	}
 
-		model = (CoreModel) SPProvider.initializeObject(model, context);
+	private String notificationUrlGenerator(String decryptedUrl,
+			VideoListModel videoListModel) {
+		return decryptedUrl + "gcm_id=" + videoListModel.getGcm_id();
+	}
+
+	public VideoListModel getVideosListModel(VideoListModel model) {
+		model = (VideoListModel) SPProvider.initializeObject(model, context);
 
 		if (!Utility.checkNetwork(context)) {
 			model.setMessageId(MessageConstants.NO_NETWORK_CONNECTION);
@@ -49,55 +59,15 @@ public class NetworkOperations {
 
 				String result = postAndResponseString(
 						objectConvertorModel.getClassString(model),
-						urlChecker(Utility.decrypt(
-								UrlConstants.URL_CHECK_APP_VERSION,
-								Utility.getAppSignature(context))), 4000, 4000);
-				
-				model = objectConvertorModel.getClassObject(
-						Utility.decrypt(result,
-								Utility.getAppSignature(context)),
-						CoreModel.class);
-
-//				Log.d("crypto", model.toString());
-				
-				return model;
-
-			} catch (ClientProtocolException ex) {
-				model.setMessageId(MessageConstants.EXCEPTION_ERROR);
-			} catch (IOException ex) {
-				model.setMessageId(MessageConstants.EXCEPTION_ERROR);
-			}
-		}
-
-		return model;
-	}
-
-	public VideoListModel getVideosListModel(CoreModel coreModel) {
-
-		coreModel = (CoreModel) SPProvider.initializeObject(coreModel, context);
-		VideoListModel model = new VideoListModel();
-
-		if (!Utility.checkNetwork(context)) {
-			model.setMessageId(MessageConstants.NO_NETWORK_CONNECTION);
-		} else if (!Utility.checkInternetConnection()) {
-			model.setMessageId(MessageConstants.NO_INTERNET_CONNECTION);
-		} else {
-
-			try {
-
-				ObjectConvertor<CoreModel> objectConvertorModel = new ObjectConvertor<CoreModel>();
-
-				String result = postAndResponseString(
-						objectConvertorModel.getClassString(coreModel),
 						urlGenerator(Utility.decrypt(
 								UrlConstants.URL_VIDEOS_LIST,
-								Utility.getAppSignature(context)), coreModel),
+								Utility.getAppSignature(context)), model),
 						BusinessConstants.CONNECTION_TIMEOUT,
 						BusinessConstants.BUSINESS_DATA_TIMEOUT);
 
-				ObjectConvertor<VideoListModel> objectConvertorUserModel = new ObjectConvertor<VideoListModel>();
-				
-				model = objectConvertorUserModel.getClassObject(
+				ObjectConvertor<VideoListModel> objectConvertorChannelModelList = new ObjectConvertor<VideoListModel>();
+
+				model = objectConvertorChannelModelList.getClassObject(
 						Utility.decrypt(result,
 								Utility.getAppSignature(context)),
 						VideoListModel.class);
@@ -107,15 +77,16 @@ public class NetworkOperations {
 			} catch (IOException ex) {
 				model.setMessageId(MessageConstants.UN_SUCCESSFUL);
 			}
-
 		}
 
 		return model;
 	}
 
-	public VideoListModel getNotificationVideosListModel(CoreModel coreModel) {
+	public VideoListModel getNotificationVideosListModel(
+			VideoListModel coreModel) {
 
-		coreModel = (CoreModel) SPProvider.initializeObject(coreModel, context);
+		coreModel = (VideoListModel) SPProvider.initializeObject(coreModel,
+				context);
 		VideoListModel model = new VideoListModel();
 
 		if (!Utility.checkNetwork(context)) {
@@ -153,16 +124,6 @@ public class NetworkOperations {
 		return model;
 	}
 
-	private String urlGenerator(String encrypted, CoreModel coreModel) {
-		return encrypted + "id=" + coreModel.getStartId() + "&max="
-				+ coreModel.getMaxCount();
-	}
-
-	private String notificationUrlGenerator(String decrypted,
-			CoreModel coreModel) {
-		return decrypted + "gcm_id=" + coreModel.getGcm_id();
-	}
-
 	private String postAndResponseString(String convertedModel, String url,
 			int connectionTimeout, int businessDataTimeout)
 			throws ClientProtocolException, IOException {
@@ -186,10 +147,12 @@ public class NetworkOperations {
 		while ((line = bufferedReader.readLine()) != null) {
 			result.append(line);
 		}
-		
-		
+
 		Log.d("testA", "output : " + result.toString());
-		Log.d("testA", "outputX : " + Utility.decrypt(result.toString(), Utility.getAppSignature(context)));
+		Log.d("testA",
+				"outputX : "
+						+ Utility.decrypt(result.toString(),
+								Utility.getAppSignature(context)));
 
 		return result.toString();
 	}
@@ -211,12 +174,100 @@ public class NetworkOperations {
 		return url;
 	}
 
+	public CoreModel checkAppVersion(CoreModel model) {
+
+		model = (CoreModel) SPProvider.initializeObject(model, context);
+
+		if (!Utility.checkNetwork(context)) {
+			model.setMessageId(MessageConstants.NO_NETWORK_CONNECTION);
+		} else if (!Utility.checkInternetConnection()) {
+			model.setMessageId(MessageConstants.NO_INTERNET_CONNECTION);
+		} else {
+			try {
+
+				ObjectConvertor<CoreModel> objectConvertorModel = new ObjectConvertor<CoreModel>();
+
+				String result = postAndResponseString(
+						objectConvertorModel.getClassString(model),
+						urlChecker(Utility.decrypt(
+								UrlConstants.URL_CHECK_APP_VERSION,
+								Utility.getAppSignature(context))), 4000, 4000);
+
+				model = objectConvertorModel.getClassObject(
+						Utility.decrypt(result,
+								Utility.getAppSignature(context)),
+						CoreModel.class);
+
+				// Log.d("crypto", model.toString());
+
+				return model;
+
+			} catch (ClientProtocolException ex) {
+				model.setMessageId(MessageConstants.EXCEPTION_ERROR);
+			} catch (IOException ex) {
+				model.setMessageId(MessageConstants.EXCEPTION_ERROR);
+			}
+		}
+
+		return model;
+	}
+
+	public SettingNotificationModel sendNotificationSettingsModel(
+			SettingNotificationModel settingNotificationModel) {
+
+		settingNotificationModel = (SettingNotificationModel) SPProvider
+				.initializeObject(settingNotificationModel, context);
+
+		if (!Utility.checkNetwork(context)) {
+			settingNotificationModel
+					.setMessageId(MessageConstants.NO_NETWORK_CONNECTION);
+		} else if (!Utility.checkInternetConnection()) {
+			settingNotificationModel
+					.setMessageId(MessageConstants.NO_INTERNET_CONNECTION);
+		} else {
+
+			try {
+
+				ObjectConvertor<SettingNotificationModel> objectConvertorModel = new ObjectConvertor<SettingNotificationModel>();
+
+				String result = postAndResponseString(
+						objectConvertorModel
+								.getClassString(settingNotificationModel),
+						Utility.decrypt(
+								UrlConstants.URL_SEND_SETTINGS_NOTIFICATION_MODEL,
+								Utility.getAppSignature(context)),
+						BusinessConstants.CONNECTION_TIMEOUT,
+						BusinessConstants.BUSINESS_DATA_TIMEOUT);
+
+				ObjectConvertor<SettingNotificationModel> objectConvertorUserModel = new ObjectConvertor<SettingNotificationModel>();
+
+				settingNotificationModel = objectConvertorUserModel
+						.getClassObject(
+								Utility.decrypt(result,
+										Utility.getAppSignature(context)),
+								SettingNotificationModel.class);
+
+			} catch (ClientProtocolException ex) {
+
+				settingNotificationModel
+						.setMessageId(MessageConstants.UN_SUCCESSFUL);
+
+			} catch (IOException ex) {
+
+				settingNotificationModel
+						.setMessageId(MessageConstants.UN_SUCCESSFUL);
+
+			}
+
+		}
+
+		return settingNotificationModel;
+	}
+
 	public GCMModel sendGCMToServer(GCMModel gcmModel) {
 
-		Log.d("testGx", "x1: " + gcmModel.toString());
 		gcmModel = SPProvider.initializeGCMObject(gcmModel, context);
-		Log.d("testGx", "x2: " + gcmModel.toString());
-		
+
 		if (!Utility.checkNetwork(context)) {
 			gcmModel.setMessageId(MessageConstants.NO_NETWORK_CONNECTION);
 		} else if (!Utility.checkInternetConnection()) {
@@ -234,15 +285,11 @@ public class NetworkOperations {
 						BusinessConstants.CONNECTION_TIMEOUT,
 						BusinessConstants.BUSINESS_DATA_TIMEOUT);
 
-
 				ObjectConvertor<GCMModel> objectConvertorUserModel = new ObjectConvertor<GCMModel>();
 				gcmModel = objectConvertorUserModel.getClassObject(
 						Utility.decrypt(result,
 								Utility.getAppSignature(context)),
 						GCMModel.class);
-
-				Log.d("testGx", "x3: " + result);
-				Log.d("testGx", "x4: "+ Utility.decrypt(result,	Utility.getAppSignature(context)));
 
 			} catch (ClientProtocolException ex) {
 				gcmModel.setMessageId(MessageConstants.UN_SUCCESSFUL);
@@ -253,6 +300,10 @@ public class NetworkOperations {
 		}
 
 		return gcmModel;
+	}
+
+	public static void submitUserInfo() {
+
 	}
 
 }

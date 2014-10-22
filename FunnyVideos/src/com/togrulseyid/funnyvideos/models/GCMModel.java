@@ -1,98 +1,40 @@
 package com.togrulseyid.funnyvideos.models;
 
-public class GCMModel extends CoreModel{
+public class GCMModel extends CoreModel {
 
 	private String gcm;
-	private String message;
-	private Integer messageId;
-	private String sysLang;
-	private Integer appVersion;
-
+	private String imei;
+//	private String email;
 	/**
 	 * @return the gcm
 	 */
 	public String getGcm() {
 		return gcm;
 	}
-
 	/**
-	 * @param gcm
-	 *            the gcm to set
+	 * @param gcm the gcm to set
 	 */
 	public void setGcm(String gcm) {
 		this.gcm = gcm;
 	}
-
 	/**
-	 * @return the message
+	 * @return the iemi
 	 */
-	public String getMessage() {
-		return message;
+	public String getImei() {
+		return imei;
 	}
-
 	/**
-	 * @param message
-	 *            the message to set
+	 * @param iemi the iemi to set
 	 */
-	public void setMessage(String message) {
-		this.message = message;
+	public void setImei(String iemi) {
+		this.imei = iemi;
 	}
-
-	/**
-	 * @return the messageId
-	 */
-	public Integer getMessageId() {
-		return messageId;
-	}
-
-	/**
-	 * @param messageId
-	 *            the messageId to set
-	 */
-	public void setMessageId(Integer messageId) {
-		this.messageId = messageId;
-	}
-
-	/**
-	 * @return the sysLang
-	 */
-	public String getSysLang() {
-		return sysLang;
-	}
-
-	/**
-	 * @param sysLang
-	 *            the sysLang to set
-	 */
-	public void setSysLang(String sysLang) {
-		this.sysLang = sysLang;
-	}
-
-	/**
-	 * @return the appVersion
-	 */
-	public Integer getAppVersion() {
-		return appVersion;
-	}
-
-	/**
-	 * @param appVersion
-	 *            the appVersion to set
-	 */
-	public void setAppVersion(Integer appVersion) {
-		this.appVersion = appVersion;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "GCMModel [gcm=" + gcm + ", message=" + message + ", messageId="
-				+ messageId + ", sysLang=" + sysLang + ", appVersion="
-				+ appVersion + "]";
+		return "GCMModel [gcm=" + gcm + ", iemi=" + imei + "]";
 	}
 
 }

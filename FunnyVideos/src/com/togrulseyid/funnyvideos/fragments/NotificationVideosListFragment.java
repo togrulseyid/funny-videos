@@ -29,7 +29,6 @@ import com.togrulseyid.funnyvideos.R;
 import com.togrulseyid.funnyvideos.activities.VideoPlayerActivity;
 import com.togrulseyid.funnyvideos.adapters.VideosListAdapter;
 import com.togrulseyid.funnyvideos.constants.MessageConstants;
-import com.togrulseyid.funnyvideos.models.CoreModel;
 import com.togrulseyid.funnyvideos.models.NotificationModel;
 import com.togrulseyid.funnyvideos.models.VideoListModel;
 import com.togrulseyid.funnyvideos.models.VideoModel;
@@ -76,7 +75,7 @@ public class NotificationVideosListFragment extends Fragment {
 		return view;
 	}
 
-	CoreModel coreModel = new CoreModel();
+	VideoListModel coreModel = new VideoListModel();
 
 	private void refreshList() {
 
@@ -115,7 +114,7 @@ public class NotificationVideosListFragment extends Fragment {
 	}
 
 	private class VideosListAsynTask extends
-			AsyncTask<CoreModel, Integer, VideoListModel> {
+			AsyncTask<VideoListModel, Integer, VideoListModel> {
 
 		private Activity activity;
 		private boolean isRefresh;
@@ -134,7 +133,7 @@ public class NotificationVideosListFragment extends Fragment {
 		}
 
 		@Override
-		protected VideoListModel doInBackground(CoreModel... params) {
+		protected VideoListModel doInBackground(VideoListModel... params) {
 			NetworkOperations networkOperations = new NetworkOperations(
 					activity);
 			return networkOperations.getNotificationVideosListModel(params[0]);
