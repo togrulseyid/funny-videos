@@ -36,7 +36,7 @@ public class StartActivity extends Activity {
 
 	long startTime;
 	long duration;
-	
+
 	@Override
 	protected void onStart() {
 
@@ -51,47 +51,42 @@ public class StartActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_start);
-		
-//		Utility.getGcmPreferences(activity).edit().clear().commit();
+
 		activity = this;
 
 		textViewAppTitle = (TextView) findViewById(R.id.textViewAppTitle);
-		
+		textViewAppTitle.setText("");
+
 		if (Utility.isSendGCMToServer(getApplicationContext())) {
-			
+
 			textViewAppTitle.append("isSendGCMToServer\t");
-			
+
 			new CheckAppVersionAsynTask().execute();
 
 		} else {
 			// Check device for Play Services APK. If check succeeds, proceed
 			// with GCM registration.
-			
-//			timeExecuter("isSendGCMToServer else");
 			if (Utility.checkPlayServices(this)) {
-//			timeExecuter("checkPlayServices");
-			
 				// TODO: check if send to server
 				gcm = GoogleCloudMessaging.getInstance(this);
-				
+
 				regid = Utility.getRegistrationId(activity);
 
 				if (regid.isEmpty()) {
 
 					new RegisterInBackgroundAsyncTask().execute();
-					
+
 				} else {
-					
+
 					new CheckAppVersionAsynTask().execute();
-					
+
 				}
-				
-//				timeExecuter("checkPlayServices end");
+
 			} else {
-				
+
 				textViewAppTitle
 						.append("No valid Google Play Services APK found.");
-				
+
 			}
 		}
 
@@ -110,19 +105,20 @@ public class StartActivity extends Activity {
 		protected void onPostExecute(GCMModel result) {
 			super.onPostExecute(result);
 
-			Log.d("iemi","" + result);
-			
+			Log.d("iemi", "" + result);
+
 			if (result != null && result.getMessageId() != null) {
 
 				if (result.getMessageId() == MessageConstants.SUCCESSFUL) {
-					
+
 					// TODO: Write to pref that GCM has been send to server
-					Utility.writeGCMToSharedPreferences(getApplicationContext(), result.getGcm());
-					
+					Utility.writeGCMToSharedPreferences(
+							getApplicationContext(), result.getGcm());
+
 					new CheckAppVersionAsynTask().execute();
-					
+
 					textViewAppTitle.append("writeGCMToSharedPreferences");
-					
+
 				} else {
 					// TODO: Error Occurred
 				}
@@ -134,19 +130,18 @@ public class StartActivity extends Activity {
 
 	}
 
-
 	/**
 	 * Registers the application with GCM servers asynchronously.
 	 * <p>
 	 * Stores the registration ID and the app versionCode in the application's
 	 * shared preferences.
 	 */
-	
-	class RegisterInBackgroundAsyncTask  extends AsyncTask<Void, Void, Void> {
+
+	class RegisterInBackgroundAsyncTask extends AsyncTask<Void, Void, Void> {
 
 		@Override
 		protected Void doInBackground(Void... params) {
-//			timeExecuter("RegisterInBackgroundAsyncTask doInBackground ");
+			// timeExecuter("RegisterInBackgroundAsyncTask doInBackground ");
 			String msg = "";
 
 			try {
@@ -154,20 +149,21 @@ public class StartActivity extends Activity {
 				if (gcm == null) {
 					gcm = GoogleCloudMessaging.getInstance(activity);
 				}
-				
+
 				regid = gcm.register(SENDER_ID);
-				
+
 				msg = "Device registered, registration ID=" + regid;
 
-				// Send the registration ID to your server over HTTP, so it can use GCM/HTTP or CCS to send messages to your app.
+				// Send the registration ID to your server over HTTP, so it can
+				// use GCM/HTTP or CCS to send messages to your app.
 
 				// get Telephone IMEI address
-				TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+				TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 				String imei = telephonyManager.getDeviceId();
 				GCMModel gcmModel = new GCMModel();
 				gcmModel.setGcm(regid);
-				gcmModel.setImei(imei);	
-				
+				gcmModel.setImei(imei);
+
 				new StartAsynTask().execute(gcmModel);
 
 				// Persist the regID - no need to register again.
@@ -179,9 +175,9 @@ public class StartActivity extends Activity {
 				// Require the user to click a button again, or perform
 				// exponential back-off.
 			}
-			
-			Log.d(TAG,"" + msg);
-//			timeExecuter("RegisterInBackgroundAsyncTask");
+
+			Log.d(TAG, "" + msg);
+			// timeExecuter("RegisterInBackgroundAsyncTask");
 			return null;
 		}
 
@@ -192,7 +188,7 @@ public class StartActivity extends Activity {
 
 		@Override
 		protected CoreModel doInBackground(Void... params) {
-//			timeExecuter("CheckAppVersionAsynTask doInBackground");
+			// timeExecuter("CheckAppVersionAsynTask doInBackground");
 			NetworkOperations networkOperations = new NetworkOperations(
 					getApplicationContext());
 
@@ -203,42 +199,40 @@ public class StartActivity extends Activity {
 		protected void onPostExecute(CoreModel result) {
 			super.onPostExecute(result);
 
-//			timeExecuter("CheckAppVersionAsynTask onPostExecute if before");
+			// timeExecuter("CheckAppVersionAsynTask onPostExecute if before");
 			if (result != null
 					&& result.getMessageId() == MessageConstants.SUCCESSFUL) {
 
 				startActivity(new Intent(getApplicationContext(),
 						MainActivity.class));
 				finish();
-				
 
 			} else {
 				startActivity(new Intent(getApplicationContext(),
 						AppUpdateActivity.class));
 				finish();
 			}
-//			timeExecuter("CheckAppVersionAsynTask onPostExecute");
+			// timeExecuter("CheckAppVersionAsynTask onPostExecute");
 		}
 
 	}
-	
-	
+
 	@Override
 	protected void onDestroy() {
-		
-//		Intent service = new Intent(activity, UserInfoSyncService.class);
-//		activity.startService(service);
-//		getDeviceId		
-		
-//		timeExecuter("onDestroy");
-		
+
+		// Intent service = new Intent(activity, UserInfoSyncService.class);
+		// activity.startService(service);
+		// getDeviceId
+
+		// timeExecuter("onDestroy");
+
 		super.onDestroy();
 	}
-	
-//	void timeExecuter(String x) {
-//		duration = (System.currentTimeMillis() - startTime) / 1000; 
-//		Log.d("duration",  x + " duration: " + duration);
-//		
-//	}
+
+	// void timeExecuter(String x) {
+	// duration = (System.currentTimeMillis() - startTime) / 1000;
+	// Log.d("duration", x + " duration: " + duration);
+	//
+	// }
 
 }
