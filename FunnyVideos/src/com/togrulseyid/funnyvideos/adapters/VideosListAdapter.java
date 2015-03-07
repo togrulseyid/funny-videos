@@ -86,9 +86,6 @@ public class VideosListAdapter extends BaseAdapter {
 			}
 
 		}
-//		else {
-//			view.setVisibility(View.GONE);
-//		}
 
 		return view;
 	}

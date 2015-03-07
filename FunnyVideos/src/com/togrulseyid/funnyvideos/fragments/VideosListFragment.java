@@ -71,7 +71,7 @@ public class VideosListFragment extends Fragment {
 		return view;
 	}
 
-	VideoListModel videoListModel = new VideoListModel();
+	private VideoListModel videoListModel = new VideoListModel();
 
 	private void refreshList(boolean isUp) {
 

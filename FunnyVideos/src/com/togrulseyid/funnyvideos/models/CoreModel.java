@@ -1,7 +1,13 @@
 package com.togrulseyid.funnyvideos.models;
 
-public class CoreModel {
+import java.io.Serializable;
 
+public class CoreModel implements Serializable{
+
+	/**
+	 * Default Serializable Id
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer coreId;
 	private String message;
 	private Integer messageId;

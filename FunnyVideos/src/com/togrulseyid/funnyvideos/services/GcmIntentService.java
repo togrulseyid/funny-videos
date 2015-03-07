@@ -46,7 +46,7 @@ import com.togrulseyid.funnyvideos.operations.Utility;
 public class GcmIntentService extends IntentService {
 	public static final int NOTIFICATION_ID = 1;
 	private NotificationManager mNotificationManager;
-	public static final String TAG = "GCM Demo";
+	public static final String TAG = "extrasX";
 	private NotificationModel model = null;
 
 	public GcmIntentService() {
@@ -81,7 +81,8 @@ public class GcmIntentService extends IntentService {
 				model = objectConvertor.getClassObject(data,
 						NotificationModel.class);
 
-//				Log.i(TAG, model.toString());
+				Log.i(TAG, model.toString());
+				
 			} catch (IOException e) {
 				model.setMessage("Error Occured");
 				e.printStackTrace();
@@ -99,13 +100,15 @@ public class GcmIntentService extends IntentService {
 				// sendNotification("Deleted messages on server: " +
 				// extras.toString());
 				// If it's a regular GCM message, do some work.
-			} else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE
-					.equals(messageType)) {
+			} else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
 
 				// This loop represents the service doing some work.
-				
-				sendNotification(model); // Received e message
-			}
+				if (model != null) {
+					if (!Utility.isEmptyOrNull(model.getMessage())) {
+						sendNotification(model); // Received e message
+						Log.i(TAG, model.toString());
+					}
+				}}
 		}
 		// Release the wake lock provided by the WakefulBroadcastReceiver.
 		GcmBroadcastReceiver.completeWakefulIntent(intent);
@@ -116,48 +119,40 @@ public class GcmIntentService extends IntentService {
 	// a GCM message.
 	private void sendNotification(NotificationModel model) {
 		
-		LocalSettingModel localModel = Utility
-				.getLocalSettingModel(getApplicationContext());
-		Log.i("Utility", localModel.toString());
+		LocalSettingModel localModel = Utility.getLocalSettingModel(getApplicationContext());
 		
-		long[] vibrationPattern = { 0, 100, 1000, 1000, 2000 };
-		
-		
-		mNotificationManager = (NotificationManager) this
-				.getSystemService(Context.NOTIFICATION_SERVICE);
+		if (localModel.isNotification()) {
+			Log.i("Utility", localModel.toString());
 
-		Intent intent = new Intent(this, NotificationActivity.class);
-		Bundle bundle = new Bundle();
-		bundle.putSerializable(
-				getResources().getString(R.string._B_NOTIFICATION_OBJECT),
-				model);
-		intent.putExtras(bundle);
+			long[] vibrationPattern = { 0, 100, 1000, 1000, 2000 };
 
-		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-				intent, 0);
+			mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-				this)
-				.setSmallIcon(R.drawable.ic_launcher)
-				.setContentTitle("Funny Videos")
-				.setContentText(model.getMessage())
-				.setAutoCancel(true)
-				.setWhen(System.currentTimeMillis())
-				.setSound(
-						RingtoneManager
-								.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-				.setStyle(
-					new NotificationCompat.InboxStyle().setBigContentTitle(model.getMessage()));
-//						new NotificationCompat.BigTextStyle().bigText(model
-//								.getMessage()));
+			Intent intent = new Intent(this, NotificationActivity.class);
+			Bundle bundle = new Bundle();
+			bundle.putSerializable(getResources().getString(R.string._B_NOTIFICATION_OBJECT), model);
+			intent.putExtras(bundle);
 
-		if (localModel.isNotification() && localModel.isVibrate()) {
-			mBuilder.setVibrate(vibrationPattern);
+			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+					intent, 0);
+
+			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+					.setSmallIcon(R.drawable.ic_launcher)
+					.setContentTitle("Funny Videos")
+					.setContentText(model.getMessage())
+					.setAutoCancel(true)
+					.setWhen(System.currentTimeMillis())
+					.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+					.setStyle(new NotificationCompat.InboxStyle().setBigContentTitle(model.getMessage()));
+			// new NotificationCompat.BigTextStyle().bigText(model.getMessage()));
+
+			if (localModel.isNotification() && localModel.isVibrate()) {
+				mBuilder.setVibrate(vibrationPattern);
+			}
+
+			mBuilder.setContentIntent(pendingIntent);
+			mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
 		}
-
-		mBuilder.setContentIntent(pendingIntent);
-		mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
-
 	}
 	
 }

@@ -142,8 +142,8 @@ public class NotificationVideosListFragment extends Fragment {
 		@Override
 		protected void onPostExecute(VideoListModel result) {
 			super.onPostExecute(result);
-
-			Log.d("testV", "pos" + result.toString());
+			
+			Log.d("testV", "pos" + result);
 			infoToast = new InfoToast(getActivity());
 
 			if (isAdded() && !isCancelled()) {

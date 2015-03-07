@@ -34,15 +34,12 @@ public class NetworkOperations {
 		this.context = context;
 	}
 
-	private String urlGenerator(String decryptedUrl,
-			VideoListModel videoListModel) {
-		return decryptedUrl + "id=" + videoListModel.getStartId() + "&max="
-				+ videoListModel.getMaxCount();
+	private String urlGenerator(String decryptedUrl, VideoListModel videoListModel) {
+		return decryptedUrl + "id=" + videoListModel.getStartId() + "&max=" + videoListModel.getMaxCount();
 	}
 
-	private String notificationUrlGenerator(String decryptedUrl,
-			VideoListModel videoListModel) {
-		return decryptedUrl + "gcm_id=" + videoListModel.getGcm_id();
+	private String notificationUrlGenerator(String decryptedUrl, VideoListModel videoListModel) {
+		return decryptedUrl + videoListModel.getGcm_id();
 	}
 
 	public VideoListModel getVideosListModel(VideoListModel model) {
@@ -82,10 +79,9 @@ public class NetworkOperations {
 		return model;
 	}
 
-	public VideoListModel getNotificationVideosListModel(
-			VideoListModel coreModel) {
+	public VideoListModel getNotificationVideosListModel(VideoListModel videoListModel) {
 
-		coreModel = (VideoListModel) SPProvider.initializeObject(coreModel,
+		videoListModel = (VideoListModel) SPProvider.initializeObject(videoListModel,
 				context);
 		VideoListModel model = new VideoListModel();
 
@@ -100,18 +96,22 @@ public class NetworkOperations {
 				ObjectConvertor<CoreModel> objectConvertorModel = new ObjectConvertor<CoreModel>();
 
 				String result = postAndResponseString(
-						objectConvertorModel.getClassString(coreModel),
+						objectConvertorModel.getClassString(videoListModel),
 						notificationUrlGenerator(Utility.decrypt(
 								UrlConstants.URL_GCM_NOTIFICATIONS_VIDEOS_LIST,
-								Utility.getAppSignature(context)), coreModel),
+								Utility.getAppSignature(context)),
+								videoListModel),
 						BusinessConstants.CONNECTION_TIMEOUT,
 						BusinessConstants.BUSINESS_DATA_TIMEOUT);
 
 				ObjectConvertor<VideoListModel> objectConvertorUserModel = new ObjectConvertor<VideoListModel>();
-				model = objectConvertorUserModel.getClassObject(
-						Utility.decrypt(result,
-								Utility.getAppSignature(context)),
-						VideoListModel.class);
+				Log.d("testABCD","" + Utility.decrypt(result, Utility.getAppSignature(context)));
+				Log.d("testABCD","" +notificationUrlGenerator(Utility.decrypt(
+						UrlConstants.URL_GCM_NOTIFICATIONS_VIDEOS_LIST,
+						Utility.getAppSignature(context)),
+						videoListModel));
+				
+				model = objectConvertorUserModel.getClassObject(Utility.decrypt(result, Utility.getAppSignature(context)), VideoListModel.class);
 
 			} catch (ClientProtocolException ex) {
 				model.setMessageId(MessageConstants.UN_SUCCESSFUL);

@@ -7,6 +7,12 @@ public class VideoModel implements Serializable {
 
 	private String title;
 	private String src;
+	public VideoModel() {
+	}
+	public VideoModel(String title, String src) {
+		this.title = title;
+		this.src = src;
+	}
 
 	public String getTitle() {
 		return title;

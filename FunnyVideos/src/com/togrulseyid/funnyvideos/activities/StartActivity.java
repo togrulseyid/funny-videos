@@ -3,8 +3,10 @@ package com.togrulseyid.funnyvideos.activities;
 import java.io.IOException;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.togrulseyid.funnyvideos.R;
+import com.togrulseyid.funnyvideos.constants.BusinessConstants;
 import com.togrulseyid.funnyvideos.constants.MessageConstants;
 import com.togrulseyid.funnyvideos.models.CoreModel;
 import com.togrulseyid.funnyvideos.models.GCMModel;
@@ -24,26 +27,8 @@ public class StartActivity extends Activity {
 
 	private Activity activity;
 	private String regid;
-	private static final String TAG = "testGCM";
-
-	/**
-	 * Substitute you own sender ID here. This is the project number you got
-	 * from the API Console, as described in "Getting Started."
-	 */
-	private String SENDER_ID = "748654734166";
 	private GoogleCloudMessaging gcm;
 	private TextView textViewAppTitle;
-
-	long startTime;
-	long duration;
-
-	@Override
-	protected void onStart() {
-
-		startTime = System.currentTimeMillis();
-
-		super.onStart();
-	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,34 +43,38 @@ public class StartActivity extends Activity {
 		textViewAppTitle.setText("");
 
 		if (Utility.isSendGCMToServer(getApplicationContext())) {
-
-			textViewAppTitle.append("isSendGCMToServer\t");
-
-			new CheckAppVersionAsynTask().execute();
+			// Start Activity without checking version
+			startActivity(new Intent(getApplicationContext(),
+					MainActivity.class));
+			finish();
+			// new CheckAppVersionAsynTask().execute();
 
 		} else {
 			// Check device for Play Services APK. If check succeeds, proceed
 			// with GCM registration.
-			if (Utility.checkPlayServices(this)) {
+			if (Utility.checkPlayServices(activity)) {
 				// TODO: check if send to server
-				gcm = GoogleCloudMessaging.getInstance(this);
+				gcm = GoogleCloudMessaging.getInstance(activity);
 
 				regid = Utility.getRegistrationId(activity);
 
 				if (regid.isEmpty()) {
-
 					new RegisterInBackgroundAsyncTask().execute();
 
 				} else {
+					// Start Activity without checking version
+					startActivity(new Intent(getApplicationContext(),
+							MainActivity.class));
+					finish();
 
-					new CheckAppVersionAsynTask().execute();
+					// new CheckAppVersionAsynTask().execute();
 
 				}
 
 			} else {
 
 				textViewAppTitle
-						.append("No valid Google Play Services APK found.");
+						.setText("No valid Google Play Services found.");
 
 			}
 		}
@@ -105,8 +94,6 @@ public class StartActivity extends Activity {
 		protected void onPostExecute(GCMModel result) {
 			super.onPostExecute(result);
 
-			Log.d("iemi", "" + result);
-
 			if (result != null && result.getMessageId() != null) {
 
 				if (result.getMessageId() == MessageConstants.SUCCESSFUL) {
@@ -115,9 +102,10 @@ public class StartActivity extends Activity {
 					Utility.writeGCMToSharedPreferences(
 							getApplicationContext(), result.getGcm());
 
-					new CheckAppVersionAsynTask().execute();
-
-					textViewAppTitle.append("writeGCMToSharedPreferences");
+					// new CheckAppVersionAsynTask().execute();
+					startActivity(new Intent(getApplicationContext(),
+							MainActivity.class));
+					finish();
 
 				} else {
 					// TODO: Error Occurred
@@ -137,23 +125,17 @@ public class StartActivity extends Activity {
 	 * shared preferences.
 	 */
 
-	class RegisterInBackgroundAsyncTask extends AsyncTask<Void, Void, Void> {
+	class RegisterInBackgroundAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
 		@Override
-		protected Void doInBackground(Void... params) {
-			// timeExecuter("RegisterInBackgroundAsyncTask doInBackground ");
-			String msg = "";
-
+		protected Boolean doInBackground(Void... params) {
 			try {
 
 				if (gcm == null) {
 					gcm = GoogleCloudMessaging.getInstance(activity);
 				}
 
-				regid = gcm.register(SENDER_ID);
-
-				msg = "Device registered, registration ID=" + regid;
-
+				regid = gcm.register(BusinessConstants.SENDER_ID);
 				// Send the registration ID to your server over HTTP, so it can
 				// use GCM/HTTP or CCS to send messages to your app.
 
@@ -170,17 +152,20 @@ public class StartActivity extends Activity {
 				Utility.storeRegistrationId(activity, regid);
 
 			} catch (IOException ex) {
-				msg = "Error :" + ex.getMessage();
-				// If there is an error, don't just keep trying to register.
-				// Require the user to click a button again, or perform
-				// exponential back-off.
+				ex.printStackTrace();
+				return false;
 			}
-
-			Log.d(TAG, "" + msg);
-			// timeExecuter("RegisterInBackgroundAsyncTask");
-			return null;
+			return true;
 		}
 
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			if (!result) {
+				textViewAppTitle
+						.setText(R.string.message_error_no_internet_connection_for_gcm);
+			}
+		}
 	}
 
 	private class CheckAppVersionAsynTask extends
@@ -198,7 +183,7 @@ public class StartActivity extends Activity {
 		@Override
 		protected void onPostExecute(CoreModel result) {
 			super.onPostExecute(result);
-
+			Log.d("testA", "result: " + result);
 			// timeExecuter("CheckAppVersionAsynTask onPostExecute if before");
 			if (result != null
 					&& result.getMessageId() == MessageConstants.SUCCESSFUL) {
@@ -216,23 +201,5 @@ public class StartActivity extends Activity {
 		}
 
 	}
-
-	@Override
-	protected void onDestroy() {
-
-		// Intent service = new Intent(activity, UserInfoSyncService.class);
-		// activity.startService(service);
-		// getDeviceId
-
-		// timeExecuter("onDestroy");
-
-		super.onDestroy();
-	}
-
-	// void timeExecuter(String x) {
-	// duration = (System.currentTimeMillis() - startTime) / 1000;
-	// Log.d("duration", x + " duration: " + duration);
-	//
-	// }
 
 }
