@@ -29,6 +29,7 @@
     <string name="message_default">Something went wrong!</string>
     <string name="message_not_found_data_error">Data can not be found in Database!</string>
     <string name="message_error_player">There was an error initializing the YouTubePlayer </string>
+    <string name="message_error_no_internet_connection_for_gcm">Error occurred while getting your Google Cloud Message Registration ID. Please close the app and retry again and make sure that you have internet connection!</string>
     <string name="title_activity_notification">NotificationActivity</string>
     <string name="title_activity_app_update">AppUpdateActivity</string>
 

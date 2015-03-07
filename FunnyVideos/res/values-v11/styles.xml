@@ -1,11 +1,19 @@
 <resources>
 
-    <!--
-        Base application theme for API 11+. This theme completely replaces
-        AppBaseTheme from res/values/styles.xml on API 11+ devices.
-    -->
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light">
-        <!-- API 11 theme customizations can go here. -->
+        <item name="android:actionBarStyle">@style/FVActionBar</item>
+        <item name="actionBarStyle">@style/FVActionBar</item>
+    </style>
+    <!-- ActionBar styles -->
+    <style name="FVActionBar" parent="@style/Widget.AppCompat.Light.ActionBar">
+        <item name="android:background">@drawable/background_actoinbar</item>
+        <item name="android:titleTextStyle">@style/FVActionBarTitleText</item>
+        <item name="titleTextStyle">@style/FVActionBarTitleText</item>
+        <item name="background">@drawable/background_actoinbar</item>
+    </style>
+
+    <style name="FVActionBarTitleText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/color_red</item>
     </style>
 
 </resources>
