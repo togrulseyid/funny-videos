@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="#f6f6f6"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/linearLayoutDialogInfoTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:background="@color/color_light_background_video_player_activity"
+            android:gravity="left"
+            android:orientation="vertical"
+            android:padding="10dp" >
+
+            <TextView
+                android:id="@+id/textViewDialogInfoMessageTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:gravity="center"
+                android:text="sdkchdsf dsfjsdkjfsdjkfdk"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/viewseperator"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@+id/linearLayoutDialogInfoTitle"
+            android:background="@color/color_background_actoinbar_red" />
+
+        <LinearLayout
+            android:id="@+id/linearLayoutDialogInfoBody"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/viewseperator"
+            android:layout_marginTop="20dp"
+            android:gravity="center" >
+
+            <ImageView
+                android:id="@+id/imageViewDialogInfoIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_launcher"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/textViewDialogInfoMessageBody"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="sdlfjndsf sdlf"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@android:color/background_dark"
+                android:typeface="monospace" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearLayoutDialogInfoBody"
+            android:layout_marginTop="20dp"
+            android:background="#d7d6d6"
+            android:orientation="horizontal"
+            android:paddingTop="1dp" >
+
+            <Button
+                android:id="@+id/buttonDialogInfoCancel"
+                style="@style/FV.Button.Style.White"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/button_text_ok"
+                android:typeface="monospace" />
+
+            <!-- <Button -->
+            <!-- android:id="@+id/buttonDialogInfoOK" -->
+            <!-- style="@style/AllFine.Button.Style" -->
+            <!-- android:layout_width="0dp" -->
+            <!-- android:layout_height="wrap_content" -->
+            <!-- android:layout_weight="1" -->
+            <!-- android:text="@string/button_text_approve" -->
+            <!-- android:typeface="monospace" /> -->
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -5,3 +5,5 @@ x/
 mopub-sdk/bin/
 google-play-services_lib/bin/
 PullToRefresh_library/bin/
+android-support-v7-appcompat/bin/
+sources/
