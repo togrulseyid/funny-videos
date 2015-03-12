@@ -9,7 +9,9 @@
         android:id="@+id/listViewFragmentVideosList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/adview"
         android:cacheColorHint="@color/listview_cache_color_hint_color"
+        android:clipToPadding="false"
         android:divider="@color/listview_videos_list_fragment_divider_color"
         android:dividerHeight="@dimen/listview_videos_list_fragment_divider_height"
         android:fadingEdge="none"
@@ -29,6 +31,14 @@
         android:drawableTop="@drawable/tap_to_refresh_selector"
         android:gravity="center"
         android:text="@string/action_refresh"
+        android:visibility="gone" />
+
+    <com.mopub.mobileads.MoPubView
+        android:id="@+id/adview"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:visibility="gone" />
 
 </RelativeLayout>

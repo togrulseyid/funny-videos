@@ -1,5 +1,6 @@
 package com.togrulseyid.funnyvideos.models;
 
+@SuppressWarnings("serial")
 public class SettingNotificationModel extends GCMModel {
 
 	private boolean ntf;

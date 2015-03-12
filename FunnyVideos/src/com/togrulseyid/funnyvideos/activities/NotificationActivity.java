@@ -37,7 +37,7 @@ public class NotificationActivity extends ActionBarActivity {
 
 			fragment = new NotificationVideosListFragment(
 					(NotificationModel) bundle.getSerializable(getResources()
-							.getString(R.string._B_NOTIFICATION_OBJECT)));
+							.getString(R.string._B_NOTIFICATION_OBJECT)), getSupportActionBar());
 
 		}
 

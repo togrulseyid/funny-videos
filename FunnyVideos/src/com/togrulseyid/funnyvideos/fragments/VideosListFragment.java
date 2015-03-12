@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +24,8 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.mopub.mobileads.MoPubErrorCode;
+import com.mopub.mobileads.MoPubView;
 import com.togrulseyid.funnyvideos.R;
 import com.togrulseyid.funnyvideos.activities.VideoPlayerActivity;
 import com.togrulseyid.funnyvideos.adapters.VideosListAdapter;
@@ -33,6 +34,7 @@ import com.togrulseyid.funnyvideos.models.VideoListModel;
 import com.togrulseyid.funnyvideos.models.VideoModel;
 import com.togrulseyid.funnyvideos.operations.NetworkOperations;
 import com.togrulseyid.funnyvideos.operations.Utility;
+import com.togrulseyid.funnyvideos.utils.FVLog;
 import com.togrulseyid.funnyvideos.views.InfoToast;
 
 public class VideosListFragment extends Fragment {
@@ -44,6 +46,13 @@ public class VideosListFragment extends Fragment {
 	private ArrayList<VideoModel> models;
 	private VideosListAsynTask videosListAsynTask;
 	private InfoToast infoToast;
+	private VideoListModel videoListModel = new VideoListModel();
+	private boolean isAdsActive;
+	
+	public VideosListFragment(boolean isAdsActive) {
+		this.isAdsActive = isAdsActive;
+	}
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
@@ -52,26 +61,57 @@ public class VideosListFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_videos_list, container,
 				false);
 
-		listView = (PullToRefreshListView) view
-				.findViewById(R.id.listViewFragmentVideosList);
-		textViewTapToRefresh = (TextView) view
-				.findViewById(R.id.textViewTapToRefresh);
+		listView = (PullToRefreshListView) view.findViewById(R.id.listViewFragmentVideosList);
+		textViewTapToRefresh = (TextView) view.findViewById(R.id.textViewTapToRefresh);
 
 		models = new ArrayList<VideoModel>();
 		adapter = new VideosListAdapter(getActivity(), models);
 		listView.setAdapter(adapter);
-		listView.setOnItemClickListener(new CustomItemOnItemClickListener(
-				getActivity()));
+		listView.setOnItemClickListener(new CustomItemOnItemClickListener(getActivity()));
 
 		listView.setOnRefreshListener(new CustomOnRefreshListener());
 
 		textViewTapToRefresh.setOnClickListener(new FVOnClickListener());
 		refreshList(true);
-
+		
+		/*
+		 * MoPub Advertisement
+		 */
+		if (isAdsActive) {
+			moPubView = (MoPubView) view.findViewById(R.id.adview);
+			moPubView.setAdUnitId(getString(R.string.mopub_ad_unit_id));
+			moPubView.loadAd();
+			moPubView.setBannerAdListener(new MoPubView.BannerAdListener() {
+				@Override
+				public void onBannerLoaded(MoPubView banner) {
+					moPubView.setVisibility(View.VISIBLE);
+					FVLog.d("Loaded: " + banner.getResponseString());
+				}
+				@Override
+				public void onBannerFailed(MoPubView banner, MoPubErrorCode errorCode) {
+					FVLog.e("MoPubErrorCode: " + errorCode.toString());
+				}
+				@Override
+				public void onBannerExpanded(MoPubView banner) {}
+				@Override
+				public void onBannerCollapsed(MoPubView banner) {}
+				@Override
+				public void onBannerClicked(MoPubView banner) {}
+			});
+		}
+		
 		return view;
 	}
 
-	private VideoListModel videoListModel = new VideoListModel();
+	private MoPubView moPubView;
+
+	public void onDestroy() {
+		if (isAdsActive) {
+			moPubView.destroy();
+		}
+		super.onDestroy();
+	}
+
 
 	private void refreshList(boolean isUp) {
 
@@ -85,15 +125,13 @@ public class VideosListFragment extends Fragment {
 			listView.setRefreshing(false);
 
 			videosListAsynTask = new VideosListAsynTask(getActivity(), true);
-			videoListModel.setStartId(Utility
-					.getLastSessionFromPreference(getActivity()));
+			videoListModel.setStartId(Utility.getLastSessionFromPreference(getActivity()));
 			videoListModel.setMaxCount(MAX_COUNT);
 			videosListAsynTask.execute(videoListModel);
 		} else {
 			// load more items
 
 			videosListAsynTask = new VideosListAsynTask(getActivity(), false);
-			Log.d("id_model","" + videoListModel.getStartId());
 			videoListModel.setStartId(videoListModel.getStartId());
 			videoListModel.setMaxCount(MAX_COUNT);
 			videosListAsynTask.execute(videoListModel);
@@ -157,54 +195,59 @@ public class VideosListFragment extends Fragment {
 
 			if (isAdded() && !isCancelled()) {
 
-				if (result != null && result.getMessageId() != null) {
+				if (result != null){
+					if (result.getMessageId() != null) {
 
-					if (result.getMessageId() == MessageConstants.SUCCESSFUL) {
+						if (result.getMessageId() == MessageConstants.SUCCESSFUL) {
 
-						if (isRefresh) {
-							models.clear();
+							if (isRefresh) {
+								models.clear();
+							}
+
+							for (VideoModel videoModel : result.getVideos()) {
+
+								models.add(videoModel);
+
+							}
+							adapter.notifyDataSetChanged();
+
+							Utility.saveLastSessionToPreference(getActivity(),
+									models.size());
+
+						} else if (result.getMessageId() == MessageConstants.NO_INTERNET_CONNECTION) {
+
+							listView.setVisibility(View.GONE);
+
+							textViewTapToRefresh.setVisibility(View.VISIBLE);
+							textViewTapToRefresh.setText(getResources().getString(
+									R.string.message_internet_connection_problem));
+
+						} else if (result.getMessageId() == MessageConstants.NO_NETWORK_CONNECTION) {
+
+							// adapter.notifyDataSetChanged();
+							listView.setVisibility(View.GONE);
+
+							textViewTapToRefresh.setVisibility(View.VISIBLE);
+
+							textViewTapToRefresh.setText(getResources().getString(
+									R.string.message_network_connection_problem));
+
+						} else {
+							infoToast.makeToast(result.getMessageId());
+							// adapter.notifyDataSetChanged();
 						}
-
-						for (VideoModel videoModel : result.getVideos()) {
-
-							models.add(videoModel);
-
-						}
-						adapter.notifyDataSetChanged();
-
-						Utility.saveLastSessionToPreference(getActivity(),
-								models.size());
-
-					} else if (result.getMessageId() == MessageConstants.NO_INTERNET_CONNECTION) {
-
-						listView.setVisibility(View.GONE);
-
-						textViewTapToRefresh.setVisibility(View.VISIBLE);
-						textViewTapToRefresh.setText(getResources().getString(
-								R.string.message_internet_connection_problem));
-
-					} else if (result.getMessageId() == MessageConstants.NO_NETWORK_CONNECTION) {
-
-						// adapter.notifyDataSetChanged();
-						listView.setVisibility(View.GONE);
-
-						textViewTapToRefresh.setVisibility(View.VISIBLE);
-
-						textViewTapToRefresh.setText(getResources().getString(
-								R.string.message_network_connection_problem));
-
 					} else {
-						infoToast.makeToast(result.getMessageId());
+						infoToast.makeToast(MessageConstants.SERVER_ERROR_1);
 						// adapter.notifyDataSetChanged();
 					}
-				} else {
-					infoToast.makeToast(MessageConstants.SERVER_ERROR_1);
-					// adapter.notifyDataSetChanged();
-				}
 
+				} else {
+					textViewTapToRefresh.setVisibility(View.VISIBLE);
+					listView.setVisibility(View.GONE);
+				}
 				listView.onRefreshComplete();
 
-				if (models.size() >0) {
+				if (models.size() > 1) {
 					listView.setMode(Mode.PULL_FROM_END);
 
 					// When user have friends set list visible
@@ -212,7 +255,6 @@ public class VideosListFragment extends Fragment {
 					listView.setVisibility(View.VISIBLE);
 				} else {
 					// listView.setMode(Mode.DISABLED);
-
 					// When user have no friends set list gone
 					textViewTapToRefresh.setVisibility(View.VISIBLE);
 					listView.setVisibility(View.GONE);

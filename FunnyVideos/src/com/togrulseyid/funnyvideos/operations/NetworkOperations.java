@@ -105,11 +105,11 @@ public class NetworkOperations {
 						BusinessConstants.BUSINESS_DATA_TIMEOUT);
 
 				ObjectConvertor<VideoListModel> objectConvertorUserModel = new ObjectConvertor<VideoListModel>();
-				Log.d("testABCD","" + Utility.decrypt(result, Utility.getAppSignature(context)));
-				Log.d("testABCD","" +notificationUrlGenerator(Utility.decrypt(
-						UrlConstants.URL_GCM_NOTIFICATIONS_VIDEOS_LIST,
-						Utility.getAppSignature(context)),
-						videoListModel));
+//				Log.d("testABCD","" + Utility.decrypt(result, Utility.getAppSignature(context)));
+//				Log.d("testABCD","" +notificationUrlGenerator(Utility.decrypt(
+//						UrlConstants.URL_GCM_NOTIFICATIONS_VIDEOS_LIST,
+//						Utility.getAppSignature(context)),
+//						videoListModel));
 				
 				model = objectConvertorUserModel.getClassObject(Utility.decrypt(result, Utility.getAppSignature(context)), VideoListModel.class);
 
@@ -175,7 +175,6 @@ public class NetworkOperations {
 	}
 
 	public CoreModel checkAppVersion(CoreModel model) {
-
 		model = (CoreModel) SPProvider.initializeObject(model, context);
 
 		if (!Utility.checkNetwork(context)) {
@@ -196,9 +195,7 @@ public class NetworkOperations {
 				model = objectConvertorModel.getClassObject(
 						Utility.decrypt(result,
 								Utility.getAppSignature(context)),
-						CoreModel.class);
-
-				// Log.d("crypto", model.toString());
+								CoreModel.class);
 
 				return model;
 

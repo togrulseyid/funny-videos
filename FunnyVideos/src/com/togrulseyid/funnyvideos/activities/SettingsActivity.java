@@ -3,7 +3,6 @@ package com.togrulseyid.funnyvideos.activities;
 import java.util.List;
 
 import android.annotation.TargetApi;
-import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -51,7 +50,7 @@ public class SettingsActivity extends PreferenceActivity implements
 	 */
 	private static final boolean ALWAYS_SIMPLE_PREFS = false;
 
-	LocalSettingModel localSettingModel;
+	private LocalSettingModel localSettingModel;
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
@@ -179,22 +178,14 @@ public class SettingsActivity extends PreferenceActivity implements
 	 */
 	private static void bindPreferenceSummaryToValue(Preference preference) {
 		// Set the listener to watch for value changes.
-		preference
-				.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
+		preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
 		// Trigger the listener immediately with the preference's
 		// current value.
 
-		Log.i("Utility",
-				"getKey: "
-						+ PreferenceManager.getDefaultSharedPreferences(
-								preference.getContext()).getString(
-								preference.getKey(), ""));
-		sBindPreferenceSummaryToValueListener.onPreferenceChange(
-				preference,
-				PreferenceManager.getDefaultSharedPreferences(
-						preference.getContext()).getString(preference.getKey(),
-						""));
+		Log.i("Utility", "getKey: "+ PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), ""));
+		
+		sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), ""));
 	}
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -249,8 +240,7 @@ public class SettingsActivity extends PreferenceActivity implements
 
 			Bundle  bundle = new Bundle();
 			bundle.putBoolean(getString(R.string._B_BOOL_IS_NOTIFICATION), lastModel);
-			Intent service = new Intent(getApplicationContext(),
-					UserInfoSyncService.class);
+			Intent service = new Intent(getApplicationContext(), UserInfoSyncService.class);
 			service.putExtras(bundle);
 			startService(service);
 

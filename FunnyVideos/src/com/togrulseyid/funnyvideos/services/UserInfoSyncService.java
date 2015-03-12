@@ -25,8 +25,7 @@ public class UserInfoSyncService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 
 		Log.d("testA", "started");
-		NetworkOperations networkOperations = new NetworkOperations(
-				getApplicationContext());
+		NetworkOperations networkOperations = new NetworkOperations(getApplicationContext());
 
 		Bundle bundle = intent.getExtras();
 		boolean ntf = bundle.getBoolean(getString(R.string._B_BOOL_IS_NOTIFICATION));
@@ -38,8 +37,7 @@ public class UserInfoSyncService extends IntentService {
 		notificationModel.setNtf(ntf);
 
 		Log.d("testA", "started sending");
-		SettingNotificationModel outModel = networkOperations
-				.sendNotificationSettingsModel(notificationModel);
+		SettingNotificationModel outModel = networkOperations.sendNotificationSettingsModel(notificationModel);
 
 		Log.d("testA", "started ending");
 		Log.d("testA", "" + outModel);

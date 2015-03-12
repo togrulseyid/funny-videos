@@ -6,4 +6,7 @@
     <dimen name="text_size_text_view_item_videos_list">16sp</dimen>
     <dimen name="listview_videos_list_fragment_divider_height">2dp</dimen>
 
-</resources>
+    <!-- Button Style Values -->
+    <dimen name="manads_button_style_paddings">10dp</dimen>
+    <dimen name="manads_button_style_text_size">20sp</dimen>
+</resources>

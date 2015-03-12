@@ -2,6 +2,20 @@
 
     <style name="AppBaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- API 14 theme customizations can go here. -->
+        <item name="android:actionBarStyle">@style/FVActionBar</item>
+        <item name="actionBarStyle">@style/FVActionBar</item>
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="FVActionBar" parent="@style/Widget.AppCompat.Light.ActionBar">
+        <item name="android:background">@drawable/fv_actionbar_background</item>
+        <item name="android:titleTextStyle">@style/FVActionBarTitleText</item>
+        <item name="titleTextStyle">@style/FVActionBarTitleText</item>
+        <item name="background">@drawable/fv_actionbar_background</item>
+    </style>
+
+    <style name="FVActionBarTitleText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/color_red</item>
     </style>
 
 </resources>

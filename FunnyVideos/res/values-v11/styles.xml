@@ -6,10 +6,10 @@
     </style>
     <!-- ActionBar styles -->
     <style name="FVActionBar" parent="@style/Widget.AppCompat.Light.ActionBar">
-        <item name="android:background">@drawable/background_actoinbar</item>
+        <item name="android:background">@drawable/fv_actionbar_background</item>
         <item name="android:titleTextStyle">@style/FVActionBarTitleText</item>
         <item name="titleTextStyle">@style/FVActionBarTitleText</item>
-        <item name="background">@drawable/background_actoinbar</item>
+        <item name="background">@drawable/fv_actionbar_background</item>
     </style>
 
     <style name="FVActionBarTitleText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">

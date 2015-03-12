@@ -9,6 +9,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
@@ -31,11 +33,14 @@ public class VideoPlayerActivity extends ActionBarActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_video_player);
 
 		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-			Log.e("On Config Change", "LANDSCAPE");
+		    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		    
+//			Log.e("On Config Change", "LANDSCAPE");
 			getSupportActionBar().hide();
 		}
 
@@ -51,18 +56,17 @@ public class VideoPlayerActivity extends ActionBarActivity {
 		fragmentTransaction.commit();
 		youTubePlayerSupportFragment.setMenuVisibility(true);
 
-		Toast.makeText(getApplicationContext(),
-				"For Full Screen turn phone horizontally :)",
-				Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "For Full Screen turn phone horizontally :)", Toast.LENGTH_SHORT).show();
 
 		youTubePlayerSupportFragment.initialize(
 				BusinessConstants.DEVELOPER_KEY, new OnInitializedListener() {
 					@Override
-					public void onInitializationSuccess(Provider provider,
-							YouTubePlayer player, boolean wasRestored) {
+					public void onInitializationSuccess(Provider provider, YouTubePlayer player, boolean wasRestored) {
+						
 						player.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT);
 						player.getFullscreenControlFlags();
-						player.setPlayerStyle(PlayerStyle.CHROMELESS);
+						player.setPlayerStyle(PlayerStyle.DEFAULT);
+						
 						player.setShowFullscreenButton(true);
 						if (!wasRestored) {
 							player.loadVideo(videoModel.getSrc());
@@ -87,19 +91,30 @@ public class VideoPlayerActivity extends ActionBarActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.action_share) {
+			Intent intent = new Intent(Intent.ACTION_SEND);
+			intent.setType("text/plain");
+			intent.putExtra(Intent.EXTRA_TEXT, extraTextMaker(videoModel.getSrc()));
+			startActivity(Intent.createChooser(intent, videoModel.getTitle()));
+
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
+	private String extraTextMaker(String src) {
+		return String.format(getString(R.string.txt_youtube_link_share_info), getString(R.string.app_name), src);
+	}
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
-		// TODO Auto-generated method stub
 		super.onConfigurationChanged(newConfig);
+		
 		if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
 			Log.e("On Config Change", "LANDSCAPE");
 			getSupportActionBar().hide();
+			
+		    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		} else {
 			Log.e("On Config Change", "PORTRAIT");
 			getSupportActionBar().show();
@@ -141,4 +156,10 @@ abstract class YouTubeFailureRecoveryActivity extends YouTubeBaseActivity
 
 	protected abstract YouTubePlayer.Provider getYouTubePlayerProvider();
 
+	
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
 }

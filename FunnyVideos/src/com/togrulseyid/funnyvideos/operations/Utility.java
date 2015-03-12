@@ -504,18 +504,33 @@ public class Utility {
 		return localSettingModel;
 	}
 
-	public static void saveLastSessionToPreference(Activity activity,
-			int sessionID) {
-		SharedPreferences sharedPref = PreferenceManager
-				.getDefaultSharedPreferences(activity);
-		boolean saveSession = sharedPref.getBoolean(
-				"notifications_last_session", false);
+	public static void setLocalSettingModel(Context activity) {
+
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+		sharedPref.edit().putBoolean("notifications_new_message_vibrate", true).commit();
+		sharedPref.edit().putBoolean("notifications_get_notifications", true).commit();
+		sharedPref.edit().putBoolean("notifications_last_session", true).commit();
+		
+	}
+	
+	
+	
+
+	public static void saveLastSessionToPreference(Activity activity, int sessionID) {
+		
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+		boolean saveSession = sharedPref.getBoolean("notifications_last_session", false);
 		if (saveSession) {
 			PreferenceManager
 					.getDefaultSharedPreferences(activity)
 					.edit()
 					.putInt(activity.getString(R.string._P_APP_LAST_SESSION_ID),
-							0);
+							sessionID).commit();
+		} else {
+			PreferenceManager
+			.getDefaultSharedPreferences(activity)
+			.edit()
+			.putInt(activity.getString(R.string._P_APP_LAST_SESSION_ID), 0).commit();
 		}
 	}
 

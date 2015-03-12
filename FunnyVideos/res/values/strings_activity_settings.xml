@@ -3,14 +3,10 @@
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
-
-
-    <!-- Example Session settings -->
+    <!-- Session settings -->
     <string name="pref_header_session">Session</string>
     <string name="pref_title_remember_my_last_session">Save my session</string>
     <string name="pref_description_remember_my_last_session">Save last video url for do not starting again!</string>
-<!--     <string name="pref_title_display_name">Display name</string> -->
-<!--     <string name="pref_default_display_name">John Smith</string> -->
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
 
     <string-array name="pref_example_list_titles">

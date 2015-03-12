@@ -8,7 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,28 +44,28 @@ public class NotificationVideosListFragment extends Fragment {
 	private VideosListAsynTask videosListAsynTask;
 	private InfoToast infoToast;
 	private NotificationModel model;
-
-	public NotificationVideosListFragment(NotificationModel model) {
+	
+	public NotificationVideosListFragment(NotificationModel model, ActionBar actionBar) {
 		this.model = model;
+		actionBar.setTitle(model.getMessage());
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+		
 		View view = inflater.inflate(R.layout.fragment_videos_list, container,
 				false);
+		
 
-		listView = (PullToRefreshListView) view
-				.findViewById(R.id.listViewFragmentVideosList);
-		textViewTapToRefresh = (TextView) view
-				.findViewById(R.id.textViewTapToRefresh);
+		listView = (PullToRefreshListView) view.findViewById(R.id.listViewFragmentVideosList);
+		textViewTapToRefresh = (TextView) view.findViewById(R.id.textViewTapToRefresh);
 
 		models = new ArrayList<VideoModel>();
 		adapter = new VideosListAdapter(getActivity(), models);
 		listView.setAdapter(adapter);
-		listView.setOnItemClickListener(new CustomItemOnItemClickListener(
-				getActivity()));
+		listView.setOnItemClickListener(new CustomItemOnItemClickListener(getActivity()));
 
 		listView.setOnRefreshListener(new CustomOnRefreshListener());
 
@@ -143,7 +143,6 @@ public class NotificationVideosListFragment extends Fragment {
 		protected void onPostExecute(VideoListModel result) {
 			super.onPostExecute(result);
 			
-			Log.d("testV", "pos" + result);
 			infoToast = new InfoToast(getActivity());
 
 			if (isAdded() && !isCancelled()) {
@@ -155,8 +154,6 @@ public class NotificationVideosListFragment extends Fragment {
 						}
 						for (VideoModel videoModel : result.getVideos()) {
 							models.add(videoModel);
-							Log.d("testV",
-									"videoModel: " + videoModel.toString());
 						}
 						adapter.notifyDataSetChanged();
 
@@ -169,8 +166,6 @@ public class NotificationVideosListFragment extends Fragment {
 								R.string.message_internet_connection_problem));
 
 					} else if (result.getMessageId() == MessageConstants.NO_NETWORK_CONNECTION) {
-
-						Log.d("result", "" + result);
 
 						// adapter.notifyDataSetChanged();
 						listView.setVisibility(View.GONE);
@@ -192,13 +187,13 @@ public class NotificationVideosListFragment extends Fragment {
 				listView.onRefreshComplete();
 
 				if (models.size() > 1) {
-					listView.setMode(Mode.PULL_FROM_END);
+					listView.setMode(Mode.DISABLED);
 
 					// When user have friends set list visible
 					textViewTapToRefresh.setVisibility(View.GONE);
 					listView.setVisibility(View.VISIBLE);
 				} else {
-					// listView.setMode(Mode.DISABLED);
+					 listView.setMode(Mode.DISABLED);
 
 					// When user have no friends set list gone
 					textViewTapToRefresh.setVisibility(View.VISIBLE);

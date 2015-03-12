@@ -5,16 +5,18 @@
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
-        <item name="android:actionBarStyle">@style/FVActionBar</item>
         <item name="actionBarStyle">@style/FVActionBar</item>
     </style>
+    <!-- <item name="android:actionBarStyle">@style/FVActionBar</item> -->
+
+
     <!-- ActionBar styles -->
     <style name="FVActionBar" parent="@style/Widget.AppCompat.Light.ActionBar">
-        <item name="android:background">@drawable/bitmap_background_actoinbar</item>
-        <item name="android:titleTextStyle">@style/FVActionBarTitleText</item>
         <item name="titleTextStyle">@style/FVActionBarTitleText</item>
-<!--         <item name="background">@drawable/bitmap_background_actoinbar</item> -->
+        <item name="background">@drawable/fv_actionbar_background</item>
     </style>
+    <!-- <item name="android:background">@drawable/fv_actionbar_background</item> -->
+    <!-- <item name="android:titleTextStyle">@style/FVActionBarTitleText</item> -->
 
     <style name="FVActionBarTitleText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@color/color_red</item>
@@ -27,6 +29,14 @@
         <item name="android:windowNoTitle">false</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <!-- Info Dialog -->
+    <style name="FV.Button.Style.White" parent="@android:style/Widget.Button">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:background">@drawable/button_selector_white</item>
+        <item name="android:textSize">@dimen/manads_button_style_text_size</item>
+        <item name="android:padding">@dimen/manads_button_style_paddings</item>
     </style>
 
 </resources>

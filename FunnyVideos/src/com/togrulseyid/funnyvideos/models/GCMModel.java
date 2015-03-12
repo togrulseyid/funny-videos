@@ -1,5 +1,6 @@
 package com.togrulseyid.funnyvideos.models;
 
+@SuppressWarnings("serial")
 public class GCMModel extends CoreModel {
 
 	private String gcm;

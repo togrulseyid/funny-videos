@@ -13,6 +13,7 @@ public class CoreModel implements Serializable{
 	private Integer messageId;
 	private Integer appVersion;
 	private String sysLang;
+	private boolean ads;
 	/**
 	 * @return the coreId
 	 */
@@ -73,6 +74,24 @@ public class CoreModel implements Serializable{
 	public void setSysLang(String sysLang) {
 		this.sysLang = sysLang;
 	}
+	/**
+	 * @return the ads
+	 */
+	public boolean isAds() {
+		return ads;
+	}
+	/**
+	 * @param ads the ads to set
+	 */
+	public void setAds(boolean ads) {
+		this.ads = ads;
+	}
+	/**
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -80,7 +99,8 @@ public class CoreModel implements Serializable{
 	public String toString() {
 		return "CoreModel [coreId=" + coreId + ", message=" + message
 				+ ", messageId=" + messageId + ", appVersion=" + appVersion
-				+ ", sysLang=" + sysLang + "]";
+				+ ", sysLang=" + sysLang + ", ads=" + ads + "]";
 	}
+
 
 }

@@ -1,4 +1,7 @@
 syntax: glob
 FunnyVideos/bin/
 .metadata/
-E:\MyApp\funny\funny-videos\.metadata\
+x/
+mopub-sdk/bin/
+google-play-services_lib/bin/
+PullToRefresh_library/bin/

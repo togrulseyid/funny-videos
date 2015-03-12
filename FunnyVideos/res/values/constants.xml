@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- APP_VERSION -->
-<!--     <string name="_APP_VERSION">1.0.0</string> -->
+    <!-- ADS ID AND KEYS -->
+    <string name="admob_ad_unit_id">ca-app-pub-3000464978985034/3974369277</string>
+    <string name="mopub_ad_unit_id">194fc8a5e49c44ffb93d9fbfd21c1206</string>
 
     <!-- SCREEN NAMES -->
     <string name="_SN_APPROVE_ACTIVITY">Approve Screen</string>
@@ -29,13 +30,9 @@
     <!-- Patterns -->
     <string name="_PATTERN_CHANNEL_NAME"><![CDATA[<center>Cahnnel <b><font color = #a5030d>%1$s</font></b></center>]]></string>
 
-    <!-- Asset Files -->
-    <string name="_AS_CHANNELS">channels.txt</string>
-    
-    
     <!-- PROPERTIES -->
     <string name="_P_APP_REG_ID">pAppRegId</string>
     <string name="_P_APP_VERSION">pAppVersion</string>
     <string name="_P_APP_LAST_SESSION_ID">pAppLastSessionID</string>
-    
+
 </resources>
