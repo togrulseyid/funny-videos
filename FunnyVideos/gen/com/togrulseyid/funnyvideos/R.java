@@ -1690,15 +1690,16 @@ containing a value of this type.
         public static final int ic_plusone_standard_off_client=0x7f02007b;
         public static final int ic_plusone_tall_off_client=0x7f02007c;
         public static final int ic_share=0x7f02007d;
-        public static final int indicator_arrow=0x7f02007e;
-        public static final int indicator_bg_bottom=0x7f02007f;
-        public static final int indicator_bg_top=0x7f020080;
-        public static final int powered_by_google_dark=0x7f020081;
-        public static final int powered_by_google_light=0x7f020082;
-        public static final int stripes=0x7f020083;
-        public static final int tap_to_refresh_selector=0x7f020084;
-        public static final int topmenu_bg=0x7f020085;
-        public static final int video_default=0x7f020086;
+        public static final int img_splash_screen=0x7f02007e;
+        public static final int indicator_arrow=0x7f02007f;
+        public static final int indicator_bg_bottom=0x7f020080;
+        public static final int indicator_bg_top=0x7f020081;
+        public static final int powered_by_google_dark=0x7f020082;
+        public static final int powered_by_google_light=0x7f020083;
+        public static final int stripes=0x7f020084;
+        public static final int tap_to_refresh_selector=0x7f020085;
+        public static final int topmenu_bg=0x7f020086;
+        public static final int video_default=0x7f020087;
     }
     public static final class id {
         public static final int LinearLayout1=0x7f080076;
@@ -1973,24 +1974,24 @@ containing a value of this type.
          */
         public static final int abc_shareactionprovider_share_with_application=0x7f090034;
         public static final int accept=0x7f090008;
-        public static final int action_info=0x7f09004a;
+        public static final int action_info=0x7f090049;
         /**  Menu titles 
          */
-        public static final int action_refresh=0x7f09004f;
-        public static final int action_refresh_videos_list_fragment=0x7f09004b;
-        public static final int action_settings=0x7f090049;
-        public static final int action_share=0x7f09004c;
+        public static final int action_refresh=0x7f09004e;
+        public static final int action_refresh_videos_list_fragment=0x7f09004a;
+        public static final int action_settings=0x7f090048;
+        public static final int action_share=0x7f09004b;
         /**  ADS ID AND KEYS 
          */
         public static final int admob_ad_unit_id=0x7f090036;
-        public static final int app_info_body=0x7f090062;
+        public static final int app_info_body=0x7f090061;
         /**  APP INFO 
          */
-        public static final int app_info_title=0x7f090061;
+        public static final int app_info_title=0x7f090060;
         public static final int app_name=0x7f090047;
         /**  BUTTONS 
          */
-        public static final int button_text_ok=0x7f090060;
+        public static final int button_text_ok=0x7f09005f;
         /**   Text for notification shown when the Android Wear apps needs to be updated. Only shown on the wearable. [CHAR LIMIT=NONE] 
          */
         public static final int common_android_wear_notification_needs_update_text=0x7f09000f;
@@ -2093,26 +2094,26 @@ containing a value of this type.
         public static final int create_calendar_message=0x7f09000b;
         public static final int create_calendar_title=0x7f09000a;
         public static final int decline=0x7f090009;
-        public static final int hello_world=0x7f090048;
         /**  INTENTS AND BUNDLES 
          */
-        public static final int intent_bundle_ads=0x7f090063;
-        public static final int message_default=0x7f090059;
-        public static final int message_error_no_internet_connection_for_gcm=0x7f09005c;
-        public static final int message_error_player=0x7f09005b;
-        public static final int message_exception=0x7f090057;
+        public static final int intent_bundle_ads=0x7f090062;
+        public static final int intent_bundle_ads2=0x7f090063;
+        public static final int message_default=0x7f090058;
+        public static final int message_error_no_internet_connection_for_gcm=0x7f09005b;
+        public static final int message_error_player=0x7f09005a;
+        public static final int message_exception=0x7f090056;
         /**  Message text 
          */
-        public static final int message_internet_connection_problem=0x7f090052;
-        public static final int message_loading=0x7f090054;
-        public static final int message_missing_data=0x7f090058;
-        public static final int message_network_connection_problem=0x7f090053;
-        public static final int message_not_found_data_error=0x7f09005a;
-        public static final int message_server_connection_problem=0x7f090055;
-        public static final int message_server_error=0x7f090056;
+        public static final int message_internet_connection_problem=0x7f090051;
+        public static final int message_loading=0x7f090053;
+        public static final int message_missing_data=0x7f090057;
+        public static final int message_network_connection_problem=0x7f090052;
+        public static final int message_not_found_data_error=0x7f090059;
+        public static final int message_server_connection_problem=0x7f090054;
+        public static final int message_server_error=0x7f090055;
         /**  Error Messages 
          */
-        public static final int message_text_no_internet_connection=0x7f090051;
+        public static final int message_text_no_internet_connection=0x7f090050;
         public static final int mopub_ad_unit_id=0x7f090037;
         public static final int pref_description_remember_my_last_session=0x7f090067;
         /**  Example settings for Notifications 
@@ -2139,17 +2140,17 @@ containing a value of this type.
         public static final int pull_to_refresh_release_label=0x7f090001;
         public static final int store_picture_message=0x7f090007;
         public static final int store_picture_title=0x7f090006;
-        public static final int title_activity_app_update=0x7f09005e;
-        public static final int title_activity_notification=0x7f09005d;
+        public static final int title_activity_app_update=0x7f09005d;
+        public static final int title_activity_notification=0x7f09005c;
         public static final int title_activity_settings=0x7f090064;
-        public static final int title_activity_video_player=0x7f09004d;
+        public static final int title_activity_video_player=0x7f09004c;
         /**  Dialog Titles 
          */
-        public static final int title_dialog_channel_url_chooser=0x7f090050;
-        public static final int title_update_app=0x7f09004e;
+        public static final int title_dialog_channel_url_chooser=0x7f09004f;
+        public static final int title_update_app=0x7f09004d;
         /**  TXT 
          */
-        public static final int txt_youtube_link_share_info=0x7f09005f;
+        public static final int txt_youtube_link_share_info=0x7f09005e;
         /**  Text on a placeholder buy button when Google Play services is not
          available or up-to-date 
          */

@@ -34,7 +34,6 @@ import com.togrulseyid.funnyvideos.models.VideoListModel;
 import com.togrulseyid.funnyvideos.models.VideoModel;
 import com.togrulseyid.funnyvideos.operations.NetworkOperations;
 import com.togrulseyid.funnyvideos.operations.Utility;
-import com.togrulseyid.funnyvideos.utils.FVLog;
 import com.togrulseyid.funnyvideos.views.InfoToast;
 
 public class VideosListFragment extends Fragment {
@@ -47,10 +46,12 @@ public class VideosListFragment extends Fragment {
 	private VideosListAsynTask videosListAsynTask;
 	private InfoToast infoToast;
 	private VideoListModel videoListModel = new VideoListModel();
-	private boolean isAdsActive;
+	private boolean isAds;
+	private boolean isAds2;
 	
-	public VideosListFragment(boolean isAdsActive) {
-		this.isAdsActive = isAdsActive;
+	public VideosListFragment(boolean isAds, boolean isAds2) {
+		this.isAds = isAds;
+		this.isAds2 = isAds2;
 	}
 
 
@@ -77,7 +78,8 @@ public class VideosListFragment extends Fragment {
 		/*
 		 * MoPub Advertisement
 		 */
-		if (isAdsActive) {
+		if (isAds) {
+			
 			moPubView = (MoPubView) view.findViewById(R.id.adview);
 			moPubView.setAdUnitId(getString(R.string.mopub_ad_unit_id));
 			moPubView.loadAd();
@@ -85,11 +87,12 @@ public class VideosListFragment extends Fragment {
 				@Override
 				public void onBannerLoaded(MoPubView banner) {
 					moPubView.setVisibility(View.VISIBLE);
-					FVLog.d("Loaded: " + banner.getResponseString());
+//					FVLog.d("Loaded: " + banner.getResponseString());
 				}
 				@Override
 				public void onBannerFailed(MoPubView banner, MoPubErrorCode errorCode) {
-					FVLog.e("MoPubErrorCode: " + errorCode.toString());
+					moPubView.setVisibility(View.GONE);
+//					FVLog.e("MoPubErrorCode: " + errorCode.toString());
 				}
 				@Override
 				public void onBannerExpanded(MoPubView banner) {}
@@ -98,6 +101,7 @@ public class VideosListFragment extends Fragment {
 				@Override
 				public void onBannerClicked(MoPubView banner) {}
 			});
+			
 		}
 		
 		return view;
@@ -106,7 +110,7 @@ public class VideosListFragment extends Fragment {
 	private MoPubView moPubView;
 
 	public void onDestroy() {
-		if (isAdsActive) {
+		if (isAds) {
 			moPubView.destroy();
 		}
 		super.onDestroy();
@@ -284,7 +288,8 @@ public class VideosListFragment extends Fragment {
 
 			bundle.putSerializable(
 					getResources().getString(R.string._B_SELECTED_VIDEO_ITEM),
-					models.get(position));
+					models.get(position-1));
+			bundle.putBoolean(getString(R.string.intent_bundle_ads2), isAds2);
 
 			Intent intent = new Intent(activity, VideoPlayerActivity.class);
 			intent.putExtras(bundle);

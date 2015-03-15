@@ -50,7 +50,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/viewseperator"
             android:layout_marginTop="20dp"
-            android:gravity="center" >
+            android:gravity="center"
+            android:padding="5dp" >
 
             <ImageView
                 android:id="@+id/imageViewDialogInfoIcon"
@@ -64,7 +65,7 @@
                 android:id="@+id/textViewDialogInfoMessageBody"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="sdlfjndsf sdlf"
+                android:text="sdlfjndsf sdlfsd asd asd as dasdasdasdsad as"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@android:color/background_dark"
                 android:typeface="monospace" />

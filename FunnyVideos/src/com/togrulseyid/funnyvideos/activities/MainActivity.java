@@ -18,7 +18,8 @@ public class MainActivity extends ActionBarActivity {
 
 	private InterstitialAd interstitial;
 	private Activity activity;
-	private boolean isAdsActive = true;
+	private boolean isAds = true;
+	private boolean isAds2 = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +29,9 @@ public class MainActivity extends ActionBarActivity {
 		activity = this;
 		
 		Bundle bundle = getIntent().getExtras();
-		isAdsActive = bundle.getBoolean(getString(R.string.intent_bundle_ads), true);
-		
+		isAds = bundle.getBoolean(getString(R.string.intent_bundle_ads), true);
+		isAds2 = bundle.getBoolean(getString(R.string.intent_bundle_ads2), true);
+
 		if (android.os.Build.VERSION.SDK_INT > 9) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
 					.permitAll().build();
@@ -38,7 +40,7 @@ public class MainActivity extends ActionBarActivity {
 
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new VideosListFragment(isAdsActive)).commit();
+					.add(R.id.container, new VideosListFragment(isAds, isAds2)).commit();
 		}
 		
 		
@@ -46,27 +48,25 @@ public class MainActivity extends ActionBarActivity {
 		 * AdMob Intersetial Ads
 		 * */
 		
-		if (isAdsActive) {
+		if (isAds) {
+			
 			// request test interstitial ads
-			AdRequest adRequest = new AdRequest.Builder()
-					.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-					.addTestDevice("595F5620B6D0DE597C6754CA1ECEF81C")
-					.addTestDevice("007E8C1ECD19BA441CC486F67292D8A0").build();
 
 			// Create the interstitial.
 			interstitial = new InterstitialAd(this);
 			interstitial.setAdUnitId(getString(R.string.admob_ad_unit_id));
 			// Create ad request.
-			// AdRequest adRequest = new AdRequest.Builder().build();
+			 AdRequest adRequest = new AdRequest.Builder().build();
 			// Begin loading your interstitial.
 			interstitial.loadAd(adRequest);
+			
 		}
 
 	}
 	
 	// Invoke displayInterstitial() when you are ready to display an interstitial.
 	public void displayInterstitial() {
-		if (isAdsActive && interstitial.isLoaded()) {
+		if (isAds && interstitial.isLoaded()) {
 			interstitial.show();
 		}
 	}

@@ -41,13 +41,10 @@ public class StartActivity extends Activity {
 
 		textViewAppTitle = (TextView) findViewById(R.id.textViewAppTitle);
 		textViewAppTitle.setText("");
+		
+		if (Utility.isSendGCMToServer(activity)) {
 
-		if (Utility.isSendGCMToServer(getApplicationContext())) {
-			// Start Activity without checking version
-//			startActivity(new Intent(getApplicationContext(),
-//					MainActivity.class));
-//			finish();
-			 new CheckAdsAndAppVersionAsynTask().execute();
+			new CheckAdsAndAppVersionAsynTask(activity).execute();
 
 		} else {
 			// Check device for Play Services APK. If check succeeds, proceed
@@ -61,14 +58,11 @@ public class StartActivity extends Activity {
 				regid = Utility.getRegistrationId(activity);
 
 				if (regid.isEmpty()) {
-					new RegisterInBackgroundAsyncTask().execute();
+					new RegisterInBackgroundAsyncTask(activity).execute();
 
 				} else {
-					// Start Activity without checking version
-//					startActivity(new Intent(getApplicationContext(), MainActivity.class));
-//					finish();
 
-					 new CheckAdsAndAppVersionAsynTask().execute();
+					new CheckAdsAndAppVersionAsynTask(activity).execute();
 
 				}
 
@@ -83,11 +77,15 @@ public class StartActivity extends Activity {
 	}
 
 	private class StartAsynTask extends AsyncTask<GCMModel, Integer, GCMModel> {
+		
+		private Activity activity;
+		public StartAsynTask(Activity activity) {
+			this.activity = activity;
+		}
 
 		@Override
 		protected GCMModel doInBackground(GCMModel... params) {
-			NetworkOperations networkOperations = new NetworkOperations(
-					getApplicationContext());
+			NetworkOperations networkOperations = new NetworkOperations(activity);
 			return networkOperations.sendGCMToServer(params[0]);
 		}
 
@@ -97,16 +95,21 @@ public class StartActivity extends Activity {
 
 			if (result != null && result.getMessageId() != null) {
 
-				if (result.getMessageId() == MessageConstants.SUCCESSFUL) {
+				if (result.getMessageId().equals(
+						MessageConstants.NO_NETWORK_CONNECTION)
+						|| result.getMessageId().equals(
+								MessageConstants.NO_INTERNET_CONNECTION)) {
+
+					// TODO: No Internet Connection
+					noInternet();
+
+				} else if (result.getMessageId() == MessageConstants.SUCCESSFUL) {
 
 					// TODO: Write to pref that GCM has been send to server
-					Utility.writeGCMToSharedPreferences(
-							getApplicationContext(), result.getGcm());
+					Utility.writeGCMToSharedPreferences(activity,
+							result.getGcm());
 
-					// new CheckAppVersionAsynTask().execute();
-					startActivity(new Intent(getApplicationContext(),
-							MainActivity.class));
-					finish();
+					new CheckAdsAndAppVersionAsynTask(activity).execute();
 
 				} else {
 					// TODO: Error Occurred
@@ -114,7 +117,24 @@ public class StartActivity extends Activity {
 
 			} else {
 				// TODO: No Internet Connection
+				noInternet();
+		
 			}
+		}
+
+		private void noInternet() {
+			textViewAppTitle
+					.setText(R.string.message_internet_connection_problem);
+			textViewAppTitle.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+
+					textViewAppTitle.setText("");
+					new StartAsynTask(activity).execute();
+				}
+			});
+
 		}
 
 	}
@@ -127,6 +147,11 @@ public class StartActivity extends Activity {
 	 */
 
 	class RegisterInBackgroundAsyncTask extends AsyncTask<Void, Void, Boolean> {
+
+		private Activity activity;
+		public RegisterInBackgroundAsyncTask(Activity activity) {
+			this.activity = activity;
+		}
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
@@ -147,7 +172,7 @@ public class StartActivity extends Activity {
 				gcmModel.setGcm(regid);
 				gcmModel.setImei(imei);
 
-				new StartAsynTask().execute(gcmModel);
+				new StartAsynTask(activity).execute(gcmModel);
 
 				// Persist the regID - no need to register again.
 				Utility.storeRegistrationId(activity, regid);
@@ -173,11 +198,15 @@ public class StartActivity extends Activity {
 	 * Check App Version and Ads 
 	 * */
 	private class CheckAdsAndAppVersionAsynTask extends AsyncTask<Void, Integer, CoreModel> {
-
+		
+		private Activity activity;
+		public CheckAdsAndAppVersionAsynTask(Activity activity) {
+			this.activity = activity;
+		}
+		
 		@Override
 		protected CoreModel doInBackground(Void... params) {
-			NetworkOperations networkOperations = new NetworkOperations(
-					getApplicationContext());
+			NetworkOperations networkOperations = new NetworkOperations(activity);
 			return networkOperations.checkAppVersion(new CoreModel());
 		}
 
@@ -185,81 +214,56 @@ public class StartActivity extends Activity {
 		protected void onPostExecute(CoreModel result) {
 			super.onPostExecute(result);
 
+			Log.d("testA", "results: " + result);
 			Log.d("testA", "results: " + result.isAds());
 			if (result != null && result.getMessageId() != null) {
-				if (result.getMessageId().equals(MessageConstants.SUCCESSFUL)) {
-					Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-					
+
+				if (result.getMessageId().equals(
+						MessageConstants.NO_NETWORK_CONNECTION)
+						|| result.getMessageId().equals(
+								MessageConstants.NO_INTERNET_CONNECTION)) {
+
+					// TODO: no internet connection
+					noInternet();
+
+				} else if (result.getMessageId().equals(
+						MessageConstants.SUCCESSFUL)) {
+					Intent intent = new Intent(activity, MainActivity.class);
+
 					Bundle bundle = new Bundle();
-					bundle.putBoolean(getString(R.string.intent_bundle_ads), result.isAds());
+					bundle.putBoolean(getString(R.string.intent_bundle_ads),
+							result.isAds());
+					bundle.putBoolean(getString(R.string.intent_bundle_ads2),
+							result.isAds2());
 					intent.putExtras(bundle);
 					startActivity(intent);
 					finish();
 
 				} else {
 
-					startActivity(new Intent(getApplicationContext(),
-							AppUpdateActivity.class));
+					startActivity(new Intent(activity, AppUpdateActivity.class));
 					finish();
 
 				}
 			} else {
 				// TODO: no internet connection
-
-				textViewAppTitle
-						.setText(R.string.message_internet_connection_problem);
-				textViewAppTitle.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-
-						textViewAppTitle.setText("");
-						new CheckAdsAndAppVersionAsynTask().execute();
-					}
-				});
+				noInternet();
 			}
+		}
+		
+		private void noInternet() {
+			textViewAppTitle
+					.setText(R.string.message_internet_connection_problem);
+			textViewAppTitle.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+
+					textViewAppTitle.setText("");
+					new CheckAdsAndAppVersionAsynTask(activity).execute();
+				}
+			});
 		}
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-//	
-//	private class CheckAppVersionAsynTask extends AsyncTask<Void, Integer, CoreModel> {
-//
-//		@Override
-//		protected CoreModel doInBackground(Void... params) {
-//			// timeExecuter("CheckAppVersionAsynTask doInBackground");
-//			NetworkOperations networkOperations = new NetworkOperations(
-//					getApplicationContext());
-//
-//			return networkOperations.checkAppVersion(new CoreModel());
-//		}
-//
-//		@Override
-//		protected void onPostExecute(CoreModel result) {
-//			super.onPostExecute(result);
-//			Log.d("testA", "result: " + result);
-//			// timeExecuter("CheckAppVersionAsynTask onPostExecute if before");
-//			if (result != null
-//					&& result.getMessageId() == MessageConstants.SUCCESSFUL) {
-//
-//				startActivity(new Intent(getApplicationContext(),
-//						MainActivity.class));
-//				finish();
-//
-//			} else {
-//				startActivity(new Intent(getApplicationContext(),
-//						AppUpdateActivity.class));
-//				finish();
-//			}
-//			// timeExecuter("CheckAppVersionAsynTask onPostExecute");
-//		}
-//
-//	}
-
 }

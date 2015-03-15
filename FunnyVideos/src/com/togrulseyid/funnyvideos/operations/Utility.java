@@ -33,7 +33,6 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -98,8 +97,7 @@ public class Utility {
 			appSignature = "0" + appSignature;
 		}
 
-		Log.d("testV", "appSignature: " + appSignature);
-		// return appSignature;
+//		 return appSignature;
 		return "8b31f4fa7fa1bb349d73545066c1a62a";
 	}
 
@@ -223,85 +221,6 @@ public class Utility {
 		}
 		return null;
 	}
-
-	// public static final File getOuputAdsContentFile(Context context, int
-	// adsId) {
-	//
-	// File file = new File(
-	// context.getExternalFilesDir(Environment.DIRECTORY_PICTURES
-	// + File.separator + adsDirectory + File.separator
-	// + Integer.toString(adsId)), Integer.toString(adsId)
-	// + jpeg);
-	// return file;
-	// }
-	//
-	// public static final File getOutputAdsDir(Context context, int adsId) {
-	//
-	// File file = new File(
-	// context.getExternalFilesDir(Environment.DIRECTORY_PICTURES
-	// + File.separator + adsDirectory),
-	// Integer.toString(adsId));
-	//
-	// return file;
-	//
-	// }
-	//
-	// public boolean clearAdsContent(int adsId, Context context, int
-	// dirSelection) {
-	//
-	// File dir = null;
-	//
-	// if (dirSelection == BusinessConstants.CLEAR_ADS) {
-	// dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES
-	// + File.separator + adsDirectory + File.separator + adsId);
-	// } else if (dirSelection == BusinessConstants.CLEAR_CORE) {
-	// dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-	// }
-	//
-	// if (dir.exists() && dir.isDirectory()) {
-	// if (recycledFiles == null) {
-	// recycledFiles = new ArrayList<File>();
-	// }
-	// deleteDirectory(dir);
-	// for (int i = recycledFiles.size() - 1; i >= 0; i--) {
-	// recycledFiles.get(i).delete();
-	// }
-	// }
-	//
-	// recycledFiles = null;
-	//
-	// return true;
-	// }
-	//
-	// private void deleteDirectory(File rootFile) {
-	// if (rootFile.exists()) {
-	// if (rootFile.isDirectory()) {
-	// recycledFiles.add(rootFile);
-	// File files[] = rootFile.listFiles();
-	// for (File subFile : files) {
-	// if (subFile.isDirectory()) {
-	// deleteDirectory(subFile);
-	// } else {
-	// subFile.delete();
-	// }
-	// }
-	// } else {
-	// rootFile.delete();
-	// }
-	// }
-	// }
-	//
-	// public static void sendGoogleAnalytics(String actionName, Activity
-	// activity) {
-	//
-	// Bundle bundle = new Bundle();
-	// bundle.putString(
-	// activity.getResources().getString(R.string._B_ACTION_NAME),
-	// actionName);
-	// Intent intent = new Intent(activity, GoogleAnalyticsSenderService.class);
-	// intent.putExtras(bundle);
-	// activity.startService(intent);
-	// }
 
 	public static void hideKeyBoard(EditText editText, Activity activity) {
 		InputMethodManager imm = (InputMethodManager) activity

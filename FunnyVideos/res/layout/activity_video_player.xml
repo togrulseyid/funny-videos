@@ -2,10 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_light_background_video_player_activity"
+    android:background="@android:color/black"
     tools:context="com.togrulseyid.funnyvideos.activities.VideoPlayerActivity" >
 
-    <!-- android:background="@drawable/img_background_player" -->
+    <!-- android:background="@color/color_light_background_video_player_activity" -->
 
     <LinearLayout
         android:id="@+id/fragmentz"
